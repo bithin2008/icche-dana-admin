@@ -12,6 +12,16 @@ export const navItems: INavData[] = [
     icon: 'icon-drop'
   },
   {
+    name: 'Category',
+    url: '/category',
+    icon: 'icon-drop'
+  },
+  {
+    name: 'Sub Category',
+    url: '/sub-category',
+    icon: 'icon-drop'
+  },
+  {
     name: 'Typography',
     url: '/theme/typography',
     icon: 'icon-pencil'

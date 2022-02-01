@@ -12,22 +12,30 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Username</th>
-                                    <th>Mobile</th>
-                                    <th>Email</th>
+                                    <th>Date</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="userList.length>0">
-                                    <tr *ngFor="let user of userList">
-                                        <td>{{user.firstName}} {{user.lastName}}</td>
-                                        <td>{{user.username}}</td>
-                                        <td>{{user.mobileNumber}}</td>
-                                        <td>{{user.emailId}}</td>
+                                <ng-container *ngIf="categoryList.length>0">
+                                    <tr *ngFor="let category of categoryList">
+                                        <td>{{category.categoryName}}</td>
+
+                                        <td>{{category.createDate | date:'medium'}}</td>
                                         <td>
-                                            <span class="badge badge-success">Active</span>
+                                            <span
+                                                *ngIf="category.isActive"
+                                                class="badge badge-success"
+                                            >
+                                                Active
+                                            </span>
+                                            <span
+                                                *ngIf="!category.isActive"
+                                                class="badge badge-danger"
+                                            >
+                                                Inactive
+                                            </span>
                                         </td>
                                         <td>
                                             <button
@@ -53,7 +61,7 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="userList.length==0">
+                                <ng-container *ngIf="categoryList.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
@@ -135,7 +143,7 @@
             type="button"
             class="close"
             aria-label="Close"
-            (click)="editUserModalRef.close()"
+            (click)="editCategoryModalRef.close()"
         >
             <span aria-hidden="true">&times;</span>
         </button>
@@ -212,7 +220,7 @@
         <button
             type="button"
             class="btn btn-danger"
-            (click)="editUserModalRef.close()"
+            (click)="editCategoryModalRef.close()"
         >
             Cancel
         </button>

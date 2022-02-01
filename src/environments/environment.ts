@@ -5,6 +5,6 @@
 
 export const environment = {
   production: false,
-  API_ENDPOINT: 'http://www.hazrainfotech.com/',
+  API_ENDPOINT: 'http://www.hazrainfotech.com/api-v1/',
   BASE_URL: 'http://www.hazrainfotech.com',
 };

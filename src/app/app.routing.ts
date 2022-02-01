@@ -57,6 +57,19 @@ export const routes: Routes = [
           import("./views/users/users.module").then(
             (m) => m.UsersModule
           ),
+      }, {
+        path: "category",
+        loadChildren: () =>
+          import("./views/category/category.module").then(
+            (m) => m.CategoryModule
+          ),
+      },
+      {
+        path: "sub-category",
+        loadChildren: () =>
+          import("./views/sub-category/sub-category.module").then(
+            (m) => m.SubCategoryModule
+          ),
       },
       {
         path: 'base',

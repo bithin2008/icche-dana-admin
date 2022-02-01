@@ -17,7 +17,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 // Import containers
 import { DefaultLayoutComponent } from './containers';
-
+import { ReactiveFormsModule } from '@angular/forms';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
@@ -43,7 +43,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { WebService } from './services/web.service';
-//import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   imports: [
@@ -55,13 +55,14 @@ import { ToastrModule } from 'ngx-toastr';
     AppFooterModule,
     AppHeaderModule,
     AppSidebarModule,
+    ReactiveFormsModule,
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ChartsModule,
     IconModule,
     IconSetModule.forRoot(),
-    // Ng4LoadingSpinnerModule.forRoot(),
+    //  Ng4LoadingSpinnerModule.forRoot(),
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       easing: 'ease-in',
@@ -76,7 +77,7 @@ import { ToastrModule } from 'ngx-toastr';
     P500Component,
     LoginComponent,
     RegisterComponent,
-    ConfirmationDialogComponent,
+    ConfirmationDialogComponent
   ],
   providers: [
     WebService,

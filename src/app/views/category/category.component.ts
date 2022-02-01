@@ -7,14 +7,14 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  selector: 'app-category',
+  templateUrl: './category.component.html',
+  styleUrls: ['./category.component.scss']
 })
-export class UsersComponent implements OnInit {
-  public userList: any = [];
-  public userFormDetails: any = {};
-  public editUserModalRef: any;
+export class CategoryComponent implements OnInit {
+  public categoryList: any = [];
+  public categoryFormDetails: any = {};
+  public editCategoryModalRef: any;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -28,19 +28,19 @@ export class UsersComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getUserList();
+    this.getCategoryList();
   }
 
 
-  getUserList() {
+  getCategoryList() {
     // this.spinnerService.show();
-    let url = `users?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `Category?pageNumber=${this.page}&pageSize=${this.pageSize}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
       // if (response.status == 1) {
-      this.userList = response.user;
+      this.categoryList = response.user;
       // }
 
     }, (error) => {
@@ -49,40 +49,40 @@ export class UsersComponent implements OnInit {
   }
 
   openEditUserMdal(template: TemplateRef<any>, obj) {
-    this.userFormDetails = { ...obj };
-    this.editUserModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+    this.categoryFormDetails = { ...obj };
+    this.editCategoryModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
   updateUserProfile() {
     let emailRegex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!this.userFormDetails.firstName) {
+    if (!this.categoryFormDetails.firstName) {
       this.toastr.warning('Please enter first name', 'Warning');
       return;
     }
 
-    if (!this.userFormDetails.lastName) {
+    if (!this.categoryFormDetails.lastName) {
       this.toastr.warning('Please enter last name', 'Warning');
       return;
     }
-    if (!this.userFormDetails.emailId) {
+    if (!this.categoryFormDetails.emailId) {
       this.toastr.warning('Please enter email', 'Warning');
       return;
     }
-    if (!emailRegex.test(this.userFormDetails.emailId)) {
+    if (!emailRegex.test(this.categoryFormDetails.emailId)) {
       this.toastr.warning('Please enter valid email', 'Warning');
       return;
     }
 
-    if (!this.userFormDetails.mobileNumber) {
+    if (!this.categoryFormDetails.mobileNumber) {
       this.toastr.warning('Please enter mobile', 'Warning');
       return;
     }
-    let url = `users?id=${this.userFormDetails.id}`;
+    let url = `users?id=${this.categoryFormDetails.id}`;
     // this.spinnerService.show();
-    this.webService.put(url, this.userFormDetails).subscribe((response: any) => {
-      this.getUserList();
+    this.webService.put(url, this.categoryFormDetails).subscribe((response: any) => {
+      this.getCategoryList();
       this.toastr.success('User updated successfully', 'Success');
-      this.editUserModalRef.close();
+      this.editCategoryModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
@@ -98,7 +98,7 @@ export class UsersComponent implements OnInit {
             // this.spinnerService.hide();
             //  if (response.is_valid_session) {
             //   if (response.status == 1) {
-            this.getUserList();
+            this.getCategoryList();
             this.toastr.success(response.message, 'Success');
             // } else {
             //   this.toastr.error(response.message, 'Error');
@@ -114,5 +114,4 @@ export class UsersComponent implements OnInit {
       })
       .catch((error) => { });
   }
-
 }
