@@ -50,7 +50,7 @@ export class UsersComponent implements OnInit {
 
   openEditUserMdal(template: TemplateRef<any>, obj) {
     this.userFormDetails = { ...obj };
-    this.editUserModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+    this.editUserModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
   }
 
   updateUserProfile() {

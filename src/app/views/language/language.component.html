@@ -3,16 +3,16 @@
         <div class="col-md-12 text-right">
             <button
                 class="btn btn-primary mb-3"
-                (click)="openAddSubCategoryModal(addEditSubCategoryModal)"
+                (click)="openAddLanguageModal(addEditLanguageModal)"
             >
-                Add Sub Category
+                Add Language
             </button>
         </div>
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
-                    Sub Category
+                    Language
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -27,21 +27,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="subCategoryList.length>0">
-                                    <tr *ngFor="let category of subCategoryList">
-                                        <td>{{category.subCategoryName}}</td>
+                                <ng-container *ngIf="languageList.length>0">
+                                    <tr *ngFor="let language of languageList">
+                                        <td>
+                                            {{language.languageName}} ({{language.code}})
+                                        </td>
 
-                                        <td>{{category.createDate | date:'medium'}}</td>
-                                        <td>{{category.priority}}</td>
+                                        <td>{{language.createDate | date:'medium'}}</td>
+                                        <td>{{language.priority}}</td>
                                         <td>
                                             <span
-                                                *ngIf="category.isActive"
+                                                *ngIf="language.isActive"
                                                 class="badge badge-success"
                                             >
                                                 Active
                                             </span>
                                             <span
-                                                *ngIf="!category.isActive"
+                                                *ngIf="!language.isActive"
                                                 class="badge badge-danger"
                                             >
                                                 Inactive
@@ -51,7 +53,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-primary btn-sm"
-                                                (click)="openEditSubCategoryModal(addEditSubCategoryModal,category)"
+                                                (click)="openEditLanguageModal(addEditLanguageModal,language)"
                                             >
                                                 <i
                                                     class="fa fa-edit"
@@ -61,7 +63,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-danger btn-sm"
-                                                (click)="deleteSubCategory(category)"
+                                                (click)="deleteLanguage(language)"
                                             >
                                                 <i
                                                     class="fa fa-trash"
@@ -71,13 +73,13 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="subCategoryList.length==0">
+                                <ng-container *ngIf="languageList.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
                                             class="text-center"
                                         >
-                                            Subcategory not found
+                                            Language not found
                                         </td>
                                     </tr>
                                 </ng-container>
@@ -141,19 +143,19 @@
 
 </div>
 
-<ng-template #addEditSubCategoryModal>
+<ng-template #addEditLanguageModal>
     <div class="modal-header">
         <h4
             class="modal-title"
             id="modal-basic-title"
         >
-            Subcategory Details
+            Language Details
         </h4>
         <button
             type="button"
             class="close"
             aria-label="Close"
-            (click)="editSubCategoryModalRef.close()"
+            (click)="addEditLanguageModalRef.close()"
         >
             <span aria-hidden="true">&times;</span>
         </button>
@@ -162,53 +164,45 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select Category:</label>
-                    <select
-                        class="form-control"
-                        id="exampleFormControlSelect1"
-                        [(ngModel)]="subCategoryFormDetails.categoryId"
-                    >
-                        <option value>Select Category</option>
-                        <option
-                            value="{{category.id}}"
-                            *ngFor="let category of categoryList"
-                        >
-                            {{category.categoryName}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6"></div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="pname">Subcategory Name:</label>
+                    <label for="pname">Language Code:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="subCategoryFormDetails.subCategoryName"
+                        [(ngModel)]="languageFormDetails.code"
                         class="form-control"
                     >
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Subcategory Priority:</label>
+                    <label for="pname">Language Name:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="languageFormDetails.languageName"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Language Priority:</label>
                     <input
                         type="number"
                         name="pname"
-                        [(ngModel)]="subCategoryFormDetails.priority"
+                        [(ngModel)]="languageFormDetails.priority"
                         class="form-control"
                     >
                 </div>
             </div>
 
             <div class="col-md-6">
-                <div class="form-group form-check">
+                <div class="form-group form-check mt-4">
                     <input
                         type="checkbox"
                         class="form-check-input"
                         id="exampleCheck1"
-                        [(ngModel)]="subCategoryFormDetails.isActive"
+                        [(ngModel)]="languageFormDetails.isActive"
                     >
                     <label
                         class="form-check-label"
@@ -225,22 +219,22 @@
             type="button"
             class="btn btn-primary"
             *ngIf="!isEdit"
-            (click)="addSubCategory()"
+            (click)="addLanguage()"
         >
-            Add Subcategory
+            Add Language
         </button>
         <button
             type="button"
             class="btn btn-primary"
             *ngIf="isEdit"
-            (click)="updateSubCategory()"
+            (click)="updateLanguage()"
         >
-            Update Subcategory
+            Update Language
         </button>
         <button
             type="button"
             class="btn btn-danger"
-            (click)="editSubCategoryModalRef.close()"
+            (click)="addEditLanguageModalRef.close()"
         >
             Cancel
         </button>

@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { SubCategoryComponent } from './sub-category.component';
+
+import { LanguageComponent } from './language.component';
 const routes: Routes = [
   {
     path: '',
-    component: SubCategoryComponent
+    component: LanguageComponent
   }
 ];
 
@@ -12,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SubCategoryRoutingModule { }
+export class LanguageRoutingModule { }

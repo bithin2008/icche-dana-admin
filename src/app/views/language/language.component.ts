@@ -7,14 +7,14 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  selector: 'app-language',
+  templateUrl: './language.component.html',
+  styleUrls: ['./language.component.scss']
 })
-export class CategoryComponent implements OnInit {
-  public categoryList: any = [];
-  public categoryFormDetails: any = {};
-  public editCategoryModalRef: any;
+export class LanguageComponent implements OnInit {
+  public languageList: any = [];
+  public languageFormDetails: any = {};
+  public addEditLanguageModalRef: any;
   public isEdit: boolean = false;
   page: number = 1;
   pageSize: number = 20;
@@ -29,19 +29,19 @@ export class CategoryComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getCategoryList();
+    this.getLanguageList();
   }
 
 
-  getCategoryList() {
+  getLanguageList() {
     // this.spinnerService.show();
-    let url = `Category?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `Language?pageNumber=${this.page}&pageSize=${this.pageSize}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
       // if (response.status == 1) {
-      this.categoryList = response.category;
+      this.languageList = response.language;
       // }
 
     }, (error) => {
@@ -49,71 +49,79 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-  openAddCategoryModal(template: TemplateRef<any>) {
-    this.categoryFormDetails = {};
+  openAddLanguageModal(template: TemplateRef<any>) {
+    this.languageFormDetails = {};
     this.isEdit = false;
-    this.editCategoryModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
+    this.addEditLanguageModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  openEditCategoryModal(template: TemplateRef<any>, obj) {
-    this.categoryFormDetails = { ...obj };
+  openEditLanguageModal(template: TemplateRef<any>, obj) {
+    this.languageFormDetails = { ...obj };
     this.isEdit = true;
-    this.editCategoryModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
+    this.addEditLanguageModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  addCategory() {
-    if (!this.categoryFormDetails.categoryName) {
-      this.toastr.warning('Please enter category name', 'Warning');
+  addLanguage() {
+    if (!this.languageFormDetails.code) {
+      this.toastr.warning('Please enter language code', 'Warning');
+      return;
+    }
+    if (!this.languageFormDetails.languageName) {
+      this.toastr.warning('Please enter language name', 'Warning');
       return;
     }
 
-    if (!this.categoryFormDetails.priority) {
-      this.toastr.warning('Please enter category priority', 'Warning');
+    if (!this.languageFormDetails.priority) {
+      this.toastr.warning('Please enter language priority', 'Warning');
       return;
     }
-    let url = `Category`;
+    let url = `Language`;
     // this.spinnerService.show();
-    this.webService.post(url, this.categoryFormDetails).subscribe((response: any) => {
-      this.getCategoryList();
-      this.toastr.success('Category added successfully', 'Success');
-      this.editCategoryModalRef.close();
+    this.webService.post(url, this.languageFormDetails).subscribe((response: any) => {
+      this.getLanguageList();
+      this.toastr.success('Language added successfully', 'Success');
+      this.addEditLanguageModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  updateCategory() {
-    if (!this.categoryFormDetails.categoryName) {
-      this.toastr.warning('Please enter category name', 'Warning');
+  updateLanguage() {
+    if (!this.languageFormDetails.code) {
+      this.toastr.warning('Please enter language code', 'Warning');
+      return;
+    }
+    if (!this.languageFormDetails.languageName) {
+      this.toastr.warning('Please enter language name', 'Warning');
       return;
     }
 
-    if (!this.categoryFormDetails.priority) {
-      this.toastr.warning('Please enter category priority', 'Warning');
+    if (!this.languageFormDetails.priority) {
+      this.toastr.warning('Please enter language priority', 'Warning');
       return;
     }
-    let url = `Category?id=${this.categoryFormDetails.id}`;
+    let url = `Language?id=${this.languageFormDetails.id}`;
     // this.spinnerService.show();
-    this.webService.put(url, this.categoryFormDetails).subscribe((response: any) => {
-      this.getCategoryList();
-      this.toastr.success('Category updated successfully', 'Success');
-      this.editCategoryModalRef.close();
+    this.webService.put(url, this.languageFormDetails).subscribe((response: any) => {
+      this.getLanguageList();
+      this.toastr.success('Language updated successfully', 'Success');
+      this.addEditLanguageModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  deleteCategory(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete user  ${obj.categoryName}?`)
+  deleteLanguage(obj) {
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete language  ${obj.languageName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `users?id=${obj.id}`;
+          let url = `Language?id=${obj.id}`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
             //  if (response.is_valid_session) {
             //   if (response.status == 1) {
-            this.getCategoryList();
+            this.getLanguageList();
             this.toastr.success(response.message, 'Success');
             // } else {
             //   this.toastr.error(response.message, 'Error');

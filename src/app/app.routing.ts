@@ -72,6 +72,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "language",
+        loadChildren: () =>
+          import("./views/language/language.module").then(
+            (m) => m.LanguageModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
