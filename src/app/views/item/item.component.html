@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12 text-right">
             <button
-                class="btn btn-primary mb-3"
+                class="btn btn-primary mb-3 mt-3"
                 (click)="openAddItemModal(addEditItemModal)"
             >
                 Add Item
@@ -23,15 +23,15 @@
                                     <th>Sub title</th>
                                     <th>Date</th>
                                     <th>Status</th>
-                                    <th width="100"></th>
+                                    <th width="150"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="itemList.length>0">
+                                <ng-container *ngIf="itemList?.length>0">
                                     <tr *ngFor="let item of itemList">
-                                        <td>{{item.title}}</td>
-                                        <td>{{item.subTitle}}</td>
-                                        <td>{{item.createDate | date:'medium'}}</td>
+                                        <td>{{item?.title}}</td>
+                                        <td>{{item?.subTitle}}</td>
+                                        <td>{{item?.createDate | date:'medium'}}</td>
                                         <td>
                                             <span
                                                 *ngIf="item.isActive"
@@ -49,7 +49,16 @@
                                         <td>
                                             <button
                                                 type="button"
-                                                class="btn btn-primary btn-sm"
+                                                class="btn btn-dark btn-sm mr-2"
+                                            >
+                                                <i
+                                                    class="fa fa-eye"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-sm mr-2"
                                                 (click)="openEditItemModal(addEditItemModal,item)"
                                             >
                                                 <i
@@ -70,7 +79,7 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="itemList.length==0">
+                                <ng-container *ngIf="itemList?.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
@@ -159,27 +168,84 @@
     </div>
     <div class="modal-body">
         <div class="row">
-
             <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select SubCategory:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="itemFormDetails.subCategoryId"
+                    >
+                        <option value>Select subcategory</option>
+                        <option
+                            value="{{subcategory.id}}"
+                            *ngFor="let subcategory of subCategoryList"
+                        >
+                            {{subcategory.subCategoryName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select Language:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="itemFormDetails.languageId"
+                    >
+                        <option value>Select language</option>
+                        <option
+                            value="{{language.id}}"
+                            *ngFor="let language of languageList"
+                        >
+                            {{language.languageName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
                     <label for="pname">Item Name:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.itemName"
+                        [(ngModel)]="itemFormDetails.name"
                         class="form-control"
                     >
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Item Priority:</label>
+                    <label for="pname">Item Title:</label>
                     <input
-                        type="number"
+                        type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.priority"
+                        [(ngModel)]="itemFormDetails.title"
                         class="form-control"
                     >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Item Subtitle:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.subTitle"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="pname">Description:</label>
+                    <textarea
+                        class="form-control"
+                        name="subTitle"
+                        [(ngModel)]="itemFormDetails.description"
+                    ></textarea>
+
                 </div>
             </div>
 

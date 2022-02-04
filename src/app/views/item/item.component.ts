@@ -14,8 +14,10 @@ import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-d
 })
 export class ItemComponent implements OnInit {
 
-  public ItemList: any = [];
-  public ItemFormDetails: any = {};
+  public itemList: any = [];
+  public subCategoryList: any = [];
+  public languageList: any = [];
+  public itemFormDetails: any = {};
   public addEditItemModalRef: any;
   public isEdit: boolean = false;
   page: number = 1;
@@ -40,10 +42,40 @@ export class ItemComponent implements OnInit {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
       this.getItemList();
     } else {
-      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
       localStorage.clear();
     }
+  }
+
+  getSubCategoryList() {
+    // this.spinnerService.show();
+    let url = `SubCategory?pageNumber=1&pageSize=200`;
+    this.webService.get(url).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      // if (response.status == 1) {
+      this.subCategoryList = response.subCategory;
+      // }
+
+    }, (error) => {
+      console.log('error', error);
+    });
+  }
+
+  getLanguageList() {
+    // this.spinnerService.show();
+    let url = `Language?pageNumber=1&pageSize=200`;
+    if (this.filterForm.searchText)
+      url = url + `&searchText=${this.filterForm.searchText}`;
+    this.webService.get(url).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      // if (response.status == 1) {
+      this.languageList = response.language;
+      // }
+
+    }, (error) => {
+      console.log('error', error);
+    });
   }
 
 
@@ -55,9 +87,11 @@ export class ItemComponent implements OnInit {
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
-      // if (response.status == 1) {
-      this.ItemList = response.viewItems;
-      // }
+      if (response.viewItems.length > 0) {
+        this.itemList = response.viewItems;
+      } else {
+        this.itemList = [];
+      }
 
     }, (error) => {
       console.log('error', error);
@@ -65,31 +99,45 @@ export class ItemComponent implements OnInit {
   }
 
   openAddItemModal(template: TemplateRef<any>) {
-    this.ItemFormDetails = {};
+    this.itemFormDetails = {
+      subCategoryId: '',
+      languageId: ''
+    };
     this.isEdit = false;
+    this.getSubCategoryList();
+    this.getLanguageList();
     this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
   openEditItemModal(template: TemplateRef<any>, obj) {
-    this.ItemFormDetails = { ...obj };
+    this.itemFormDetails = { ...obj };
     this.isEdit = true;
+    this.getSubCategoryList();
+    this.getLanguageList();
     this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
   addItem() {
-
-    if (!this.ItemFormDetails.ItemName) {
-      this.toastr.warning('Please enter Item name', 'Warning');
+    if (!this.itemFormDetails.subCategoryId) {
+      this.toastr.warning('Please select Sub Category', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.languageId) {
+      this.toastr.warning('Please select language', 'Warning');
       return;
     }
 
-    if (!this.ItemFormDetails.priority) {
-      this.toastr.warning('Please enter Item priority', 'Warning');
+    if (!this.itemFormDetails.name) {
+      this.toastr.warning('Please enter Item name', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.title) {
+      this.toastr.warning('Please enter Item title', 'Warning');
       return;
     }
     let url = `ViewItem`;
     // this.spinnerService.show();
-    this.webService.post(url, this.ItemFormDetails).subscribe((response: any) => {
+    this.webService.post(url, this.itemFormDetails).subscribe((response: any) => {
       this.getItemList();
       this.toastr.success('Item added successfully', 'Success');
       this.addEditItemModalRef.close();
@@ -99,19 +147,26 @@ export class ItemComponent implements OnInit {
   }
 
   updateItem() {
+    if (!this.itemFormDetails.subCategoryId) {
+      this.toastr.warning('Please select Sub Category', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.languageId) {
+      this.toastr.warning('Please select language', 'Warning');
+      return;
+    }
 
-    if (!this.ItemFormDetails.ItemName) {
+    if (!this.itemFormDetails.name) {
       this.toastr.warning('Please enter Item name', 'Warning');
       return;
     }
-
-    if (!this.ItemFormDetails.priority) {
-      this.toastr.warning('Please enter Item priority', 'Warning');
+    if (!this.itemFormDetails.title) {
+      this.toastr.warning('Please enter Item title', 'Warning');
       return;
     }
-    let url = `ViewItem?id=${this.ItemFormDetails.id}`;
+    let url = `ViewItem?id=${this.itemFormDetails.id}`;
     // this.spinnerService.show();
-    this.webService.put(url, this.ItemFormDetails).subscribe((response: any) => {
+    this.webService.put(url, this.itemFormDetails).subscribe((response: any) => {
       this.getItemList();
       this.toastr.success('Item updated successfully', 'Success');
       this.addEditItemModalRef.close();
@@ -121,7 +176,7 @@ export class ItemComponent implements OnInit {
   }
 
   deleteItem(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item  ${obj.ItemName}?`)
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item  ${obj.name}?`)
       .then((confirmed) => {
         if (confirmed) {
           let url = `ViewItem?id=${obj.id}`;
