@@ -29,7 +29,17 @@ export class LanguageComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getLanguageList();
+    this.checkLogin();
+  }
+
+  checkLogin() {
+    if (localStorage.getItem('token') && localStorage.getItem('userid')) {
+      this.getLanguageList();
+    } else {
+      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    }
   }
 
 

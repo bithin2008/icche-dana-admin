@@ -58,6 +58,7 @@ export class LoginComponent {
         this.toastr.error(response.message, 'Warning');
       } else {
         localStorage.setItem("token", response.token);
+        localStorage.setItem("userid", response.id);
         let firstName = response.firstName;
         let lastName = response.lastName;
         let username = firstName + ' ' + lastName;
@@ -68,7 +69,7 @@ export class LoginComponent {
         else
           setTimeout(() => {
             this.router.navigate([`/users`]);
-          }, 4000);
+          }, 2000);
       }
       //  if (response.result) {
 

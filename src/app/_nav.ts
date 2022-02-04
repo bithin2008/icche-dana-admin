@@ -27,6 +27,16 @@ export const navItems: INavData[] = [
     icon: 'icon-drop'
   },
   {
+    name: 'Genre',
+    url: '/genre',
+    icon: 'icon-drop'
+  },
+  {
+    name: 'Item',
+    url: '/item',
+    icon: 'icon-drop'
+  },
+  {
     name: 'Typography',
     url: '/theme/typography',
     icon: 'icon-pencil'

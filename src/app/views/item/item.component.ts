@@ -6,15 +6,18 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
+
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  selector: 'app-item',
+  templateUrl: './item.component.html',
+  styleUrls: ['./item.component.scss']
 })
-export class UsersComponent implements OnInit {
-  public userList: any = [];
-  public userFormDetails: any = {};
-  public editUserModalRef: any;
+export class ItemComponent implements OnInit {
+
+  public ItemList: any = [];
+  public ItemFormDetails: any = {};
+  public addEditItemModalRef: any;
+  public isEdit: boolean = false;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -27,13 +30,15 @@ export class UsersComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,) { }
 
 
+
+
   ngOnInit(): void {
     this.checkLogin();
   }
 
   checkLogin() {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
-      this.getUserList();
+      this.getItemList();
     } else {
       this.toastr.warning('You are logged out. Please login again', 'Warning');
       this.router.navigate(['/login']);
@@ -42,15 +47,16 @@ export class UsersComponent implements OnInit {
   }
 
 
-  getUserList() {
+
+  getItemList() {
     // this.spinnerService.show();
-    let url = `users?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `ViewItem?pageNumber=${this.page}&pageSize=${this.pageSize}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
       // if (response.status == 1) {
-      this.userList = response.user;
+      this.ItemList = response.viewItems;
       // }
 
     }, (error) => {
@@ -58,57 +64,73 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  openEditUserMdal(template: TemplateRef<any>, obj) {
-    this.userFormDetails = { ...obj };
-    this.editUserModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
+  openAddItemModal(template: TemplateRef<any>) {
+    this.ItemFormDetails = {};
+    this.isEdit = false;
+    this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  updateUserProfile() {
-    let emailRegex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!this.userFormDetails.firstName) {
-      this.toastr.warning('Please enter first name', 'Warning');
+  openEditItemModal(template: TemplateRef<any>, obj) {
+    this.ItemFormDetails = { ...obj };
+    this.isEdit = true;
+    this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+  }
+
+  addItem() {
+
+    if (!this.ItemFormDetails.ItemName) {
+      this.toastr.warning('Please enter Item name', 'Warning');
       return;
     }
 
-    if (!this.userFormDetails.lastName) {
-      this.toastr.warning('Please enter last name', 'Warning');
+    if (!this.ItemFormDetails.priority) {
+      this.toastr.warning('Please enter Item priority', 'Warning');
       return;
     }
-    if (!this.userFormDetails.emailId) {
-      this.toastr.warning('Please enter email', 'Warning');
-      return;
-    }
-    if (!emailRegex.test(this.userFormDetails.emailId)) {
-      this.toastr.warning('Please enter valid email', 'Warning');
-      return;
-    }
-
-    if (!this.userFormDetails.mobileNumber) {
-      this.toastr.warning('Please enter mobile', 'Warning');
-      return;
-    }
-    let url = `users?id=${this.userFormDetails.id}`;
+    let url = `ViewItem`;
     // this.spinnerService.show();
-    this.webService.put(url, this.userFormDetails).subscribe((response: any) => {
-      this.getUserList();
-      this.toastr.success('User updated successfully', 'Success');
-      this.editUserModalRef.close();
+    this.webService.post(url, this.ItemFormDetails).subscribe((response: any) => {
+      this.getItemList();
+      this.toastr.success('Item added successfully', 'Success');
+      this.addEditItemModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  deleteUser(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete user  ${obj.firstName} ${obj.lastName}?`)
+  updateItem() {
+
+    if (!this.ItemFormDetails.ItemName) {
+      this.toastr.warning('Please enter Item name', 'Warning');
+      return;
+    }
+
+    if (!this.ItemFormDetails.priority) {
+      this.toastr.warning('Please enter Item priority', 'Warning');
+      return;
+    }
+    let url = `ViewItem?id=${this.ItemFormDetails.id}`;
+    // this.spinnerService.show();
+    this.webService.put(url, this.ItemFormDetails).subscribe((response: any) => {
+      this.getItemList();
+      this.toastr.success('Item updated successfully', 'Success');
+      this.addEditItemModalRef.close();
+    }, (error) => {
+      console.log('error', error);
+    });
+  }
+
+  deleteItem(obj) {
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item  ${obj.ItemName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `users?id=${obj.id}`;
+          let url = `ViewItem?id=${obj.id}`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
             //  if (response.is_valid_session) {
             //   if (response.status == 1) {
-            this.getUserList();
+            this.getItemList();
             this.toastr.success(response.message, 'Success');
             // } else {
             //   this.toastr.error(response.message, 'Error');

@@ -28,8 +28,20 @@ export class CategoryComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,) { }
 
 
+
+
   ngOnInit(): void {
-    this.getCategoryList();
+    this.checkLogin();
+  }
+
+  checkLogin() {
+    if (localStorage.getItem('token') && localStorage.getItem('userid')) {
+      this.getCategoryList();
+    } else {
+      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    }
   }
 
 

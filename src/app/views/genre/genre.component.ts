@@ -7,14 +7,16 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss']
+  selector: 'app-genre',
+  templateUrl: './genre.component.html',
+  styleUrls: ['./genre.component.scss']
 })
-export class UsersComponent implements OnInit {
-  public userList: any = [];
-  public userFormDetails: any = {};
-  public editUserModalRef: any;
+export class GenreComponent implements OnInit {
+
+  public genreList: any = [];
+  public genreFormDetails: any = {};
+  public addEditGenreModalRef: any;
+  public isEdit: boolean = false;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -27,13 +29,14 @@ export class UsersComponent implements OnInit {
     private confirmationDialogService: ConfirmationDialogService,) { }
 
 
+
   ngOnInit(): void {
     this.checkLogin();
   }
 
   checkLogin() {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
-      this.getUserList();
+      this.getGenreList();
     } else {
       this.toastr.warning('You are logged out. Please login again', 'Warning');
       this.router.navigate(['/login']);
@@ -42,15 +45,15 @@ export class UsersComponent implements OnInit {
   }
 
 
-  getUserList() {
+  getGenreList() {
     // this.spinnerService.show();
-    let url = `users?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `Genre?pageNumber=${this.page}&pageSize=${this.pageSize}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
       // if (response.status == 1) {
-      this.userList = response.user;
+      this.genreList = response.genres;
       // }
 
     }, (error) => {
@@ -58,57 +61,73 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  openEditUserMdal(template: TemplateRef<any>, obj) {
-    this.userFormDetails = { ...obj };
-    this.editUserModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
+  openAddGenreModal(template: TemplateRef<any>) {
+    this.genreFormDetails = {};
+    this.isEdit = false;
+    this.addEditGenreModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  updateUserProfile() {
-    let emailRegex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!this.userFormDetails.firstName) {
-      this.toastr.warning('Please enter first name', 'Warning');
+  openEditGenreModal(template: TemplateRef<any>, obj) {
+    this.genreFormDetails = { ...obj };
+    this.isEdit = true;
+    this.addEditGenreModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+  }
+
+  addGenre() {
+
+    if (!this.genreFormDetails.genreName) {
+      this.toastr.warning('Please enter genre name', 'Warning');
       return;
     }
 
-    if (!this.userFormDetails.lastName) {
-      this.toastr.warning('Please enter last name', 'Warning');
+    if (!this.genreFormDetails.priority) {
+      this.toastr.warning('Please enter genre priority', 'Warning');
       return;
     }
-    if (!this.userFormDetails.emailId) {
-      this.toastr.warning('Please enter email', 'Warning');
-      return;
-    }
-    if (!emailRegex.test(this.userFormDetails.emailId)) {
-      this.toastr.warning('Please enter valid email', 'Warning');
-      return;
-    }
-
-    if (!this.userFormDetails.mobileNumber) {
-      this.toastr.warning('Please enter mobile', 'Warning');
-      return;
-    }
-    let url = `users?id=${this.userFormDetails.id}`;
+    let url = `Genre`;
     // this.spinnerService.show();
-    this.webService.put(url, this.userFormDetails).subscribe((response: any) => {
-      this.getUserList();
-      this.toastr.success('User updated successfully', 'Success');
-      this.editUserModalRef.close();
+    this.webService.post(url, this.genreFormDetails).subscribe((response: any) => {
+      this.getGenreList();
+      this.toastr.success('Genre added successfully', 'Success');
+      this.addEditGenreModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  deleteUser(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete user  ${obj.firstName} ${obj.lastName}?`)
+  updateGenre() {
+
+    if (!this.genreFormDetails.genreName) {
+      this.toastr.warning('Please enter genre name', 'Warning');
+      return;
+    }
+
+    if (!this.genreFormDetails.priority) {
+      this.toastr.warning('Please enter genre priority', 'Warning');
+      return;
+    }
+    let url = `Genre?id=${this.genreFormDetails.id}`;
+    // this.spinnerService.show();
+    this.webService.put(url, this.genreFormDetails).subscribe((response: any) => {
+      this.getGenreList();
+      this.toastr.success('Genre updated successfully', 'Success');
+      this.addEditGenreModalRef.close();
+    }, (error) => {
+      console.log('error', error);
+    });
+  }
+
+  deleteGenre(obj) {
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete genre  ${obj.genreName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `users?id=${obj.id}`;
+          let url = `Genre?id=${obj.id}`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
             //  if (response.is_valid_session) {
             //   if (response.status == 1) {
-            this.getUserList();
+            this.getGenreList();
             this.toastr.success(response.message, 'Success');
             // } else {
             //   this.toastr.error(response.message, 'Error');
@@ -124,5 +143,4 @@ export class UsersComponent implements OnInit {
       })
       .catch((error) => { });
   }
-
 }

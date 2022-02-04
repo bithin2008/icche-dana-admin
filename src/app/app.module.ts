@@ -44,6 +44,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { WebService } from './services/web.service';
 import { Ng4LoadingSpinnerModule, Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { AvatarModule } from "ngx-avatar";
 import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   imports: [
@@ -61,6 +62,7 @@ import { ToastrModule } from 'ngx-toastr';
     TabsModule.forRoot(),
     ChartsModule,
     IconModule,
+    AvatarModule,
     IconSetModule.forRoot(),
     //  Ng4LoadingSpinnerModule.forRoot(),
     ToastrModule.forRoot({

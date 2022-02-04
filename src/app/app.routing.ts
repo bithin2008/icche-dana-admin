@@ -79,6 +79,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "genre",
+        loadChildren: () =>
+          import("./views/genre/genre.module").then(
+            (m) => m.GenreModule
+          ),
+      },
+      {
+        path: "item",
+        loadChildren: () =>
+          import("./views/item/item.module").then(
+            (m) => m.ItemModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },

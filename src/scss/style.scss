@@ -6,3 +6,16 @@
 
 // If you want to add something do it here
 @import "custom";
+
+.app-header .nav-item {
+    position: relative;
+    min-width: 170px;
+    margin: 0;
+    text-align: center;
+  }
+
+  .avtar-box {
+    float: left;
+    width: 50px;
+    margin-left: 10px;
+}

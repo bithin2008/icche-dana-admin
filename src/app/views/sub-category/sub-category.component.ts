@@ -30,11 +30,21 @@ export class SubCategoryComponent implements OnInit {
     private modalService: NgbModal,
     private confirmationDialogService: ConfirmationDialogService,) { }
 
-
   ngOnInit(): void {
-    this.getCategoryList();
-    this.getSubCategoryList();
+    this.checkLogin();
   }
+
+  checkLogin() {
+    if (localStorage.getItem('token') && localStorage.getItem('userid')) {
+      this.getCategoryList();
+      this.getSubCategoryList();
+    } else {
+      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.router.navigate(['/login']);
+      localStorage.clear();
+    }
+  }
+
   getCategoryList() {
     // this.spinnerService.show();
     let url = `Category?pageNumber=1&pageSize=200`;
