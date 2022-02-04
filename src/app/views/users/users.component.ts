@@ -35,7 +35,7 @@ export class UsersComponent implements OnInit {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
       this.getUserList();
     } else {
-      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
       localStorage.clear();
     }

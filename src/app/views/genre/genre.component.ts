@@ -38,7 +38,7 @@ export class GenreComponent implements OnInit {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
       this.getGenreList();
     } else {
-      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
       localStorage.clear();
     }

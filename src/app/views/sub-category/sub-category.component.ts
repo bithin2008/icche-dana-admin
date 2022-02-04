@@ -39,7 +39,7 @@ export class SubCategoryComponent implements OnInit {
       this.getCategoryList();
       this.getSubCategoryList();
     } else {
-      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
       localStorage.clear();
     }

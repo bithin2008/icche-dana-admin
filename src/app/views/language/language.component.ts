@@ -36,7 +36,7 @@ export class LanguageComponent implements OnInit {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
       this.getLanguageList();
     } else {
-      this.toastr.warning('You are logged out. Please login again', 'Warning');
+      this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
       localStorage.clear();
     }
