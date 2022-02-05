@@ -13,7 +13,7 @@ import { UsersComponent } from './views/users/users.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
+    redirectTo: 'login',
     pathMatch: 'full',
   },
   {
@@ -90,6 +90,20 @@ export const routes: Routes = [
         loadChildren: () =>
           import("./views/item/item.module").then(
             (m) => m.ItemModule
+          ),
+      },
+      {
+        path: "item-details/:itemid",
+        loadChildren: () =>
+          import("./views/item-details/item-details.module").then(
+            (m) => m.ItemDetailsModule
+          ),
+      },
+      {
+        path: "review",
+        loadChildren: () =>
+          import("./views/customer-review/customer-review.module").then(
+            (m) => m.CustomerReviewModule
           ),
       },
       {

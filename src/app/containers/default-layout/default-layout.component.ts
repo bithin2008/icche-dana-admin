@@ -33,7 +33,7 @@ export class DefaultLayoutComponent {
         if (confirmed) {
           let userId = localStorage.getItem('userid')
           // this.spinnerService.show();
-          let url = `users/logout?id=${userId}`;
+          let url = `users/logout?userId=${userId}`;
           // this.spinnerService.show();
           this.webService.post(url, {}).subscribe((response: any) => {
             this.toastr.success('Logout successfully', 'Success');

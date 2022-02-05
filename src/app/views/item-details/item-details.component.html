@@ -3,45 +3,44 @@
         <div class="col-md-12 text-right">
             <button
                 class="btn btn-primary mb-3 mt-3"
-                (click)="openAddSubCategoryModal(addEditSubCategoryModal)"
+                (click)="openAddItemModal(addEditItemModal)"
             >
-                Add Sub Category
+                Add Item
             </button>
         </div>
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
-                    Sub Category
+                    Item
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>Title</th>
+                                    <th>Sub title</th>
                                     <th>Date</th>
-                                    <th>Priority</th>
                                     <th>Status</th>
-                                    <th width="100"></th>
+                                    <th width="150"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="subCategoryList.length>0">
-                                    <tr *ngFor="let category of subCategoryList">
-                                        <td>{{category.subCategoryName}}</td>
-
-                                        <td>{{category.createDate | date:'medium'}}</td>
-                                        <td>{{category.priority}}</td>
+                                <ng-container *ngIf="itemList?.length>0">
+                                    <tr *ngFor="let item of itemList">
+                                        <td>{{item?.title}}</td>
+                                        <td>{{item?.subTitle}}</td>
+                                        <td>{{item?.createDate | date:'medium'}}</td>
                                         <td>
                                             <span
-                                                *ngIf="category.isActive"
+                                                *ngIf="item.isActive"
                                                 class="badge badge-success"
                                             >
                                                 Active
                                             </span>
                                             <span
-                                                *ngIf="!category.isActive"
+                                                *ngIf="!item.isActive"
                                                 class="badge badge-danger"
                                             >
                                                 Inactive
@@ -50,8 +49,18 @@
                                         <td>
                                             <button
                                                 type="button"
+                                                class="btn btn-dark btn-sm mr-2"
+                                                (click)="viewDetails(item)"
+                                            >
+                                                <i
+                                                    class="fa fa-eye"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
                                                 class="btn btn-primary btn-sm mr-2"
-                                                (click)="openEditSubCategoryModal(addEditSubCategoryModal,category)"
+                                                (click)="openEditItemModal(addEditItemModal,item)"
                                             >
                                                 <i
                                                     class="fa fa-edit"
@@ -61,7 +70,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-danger btn-sm"
-                                                (click)="deleteSubCategory(category)"
+                                                (click)="deleteItem(item)"
                                             >
                                                 <i
                                                     class="fa fa-trash"
@@ -71,13 +80,13 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="subCategoryList.length==0">
+                                <ng-container *ngIf="itemList?.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
                                             class="text-center"
                                         >
-                                            Subcategory not found
+                                            Item not found
                                         </td>
                                     </tr>
                                 </ng-container>
@@ -141,19 +150,19 @@
 
 </div>
 
-<ng-template #addEditSubCategoryModal>
+<ng-template #addEditItemModal>
     <div class="modal-header">
         <h4
             class="modal-title"
             id="modal-basic-title"
         >
-            Subcategory Details
+            Item Details
         </h4>
         <button
             type="button"
             class="close"
             aria-label="Close"
-            (click)="editSubCategoryModalRef.close()"
+            (click)="addEditItemModalRef.close()"
         >
             <span aria-hidden="true">&times;</span>
         </button>
@@ -162,43 +171,82 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select Category:</label>
+                    <label for="pname">Select SubCategory:</label>
                     <select
                         class="form-control"
                         id="exampleFormControlSelect1"
-                        [(ngModel)]="subCategoryFormDetails.categoryId"
+                        [(ngModel)]="itemFormDetails.subCategoryId"
                     >
-                        <option value>Select Category</option>
+                        <option value>Select subcategory</option>
                         <option
-                            value="{{category.categoryId}}"
-                            *ngFor="let category of categoryList"
+                            value="{{subcategory.id}}"
+                            *ngFor="let subcategory of subCategoryList"
                         >
-                            {{category.categoryName}}
+                            {{subcategory.subCategoryName}}
                         </option>
                     </select>
                 </div>
             </div>
-            <div class="col-md-6"></div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Subcategory Name:</label>
+                    <label for="pname">Select Language:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="itemFormDetails.languageId"
+                    >
+                        <option value>Select language</option>
+                        <option
+                            value="{{language.id}}"
+                            *ngFor="let language of languageList"
+                        >
+                            {{language.languageName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Item Name:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="subCategoryFormDetails.subCategoryName"
+                        [(ngModel)]="itemFormDetails.name"
                         class="form-control"
                     >
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Subcategory Priority:</label>
+                    <label for="pname">Item Title:</label>
                     <input
-                        type="number"
+                        type="text"
                         name="pname"
-                        [(ngModel)]="subCategoryFormDetails.priority"
+                        [(ngModel)]="itemFormDetails.title"
                         class="form-control"
                     >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Item Subtitle:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.subTitle"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="pname">Description:</label>
+                    <textarea
+                        class="form-control"
+                        name="subTitle"
+                        [(ngModel)]="itemFormDetails.description"
+                    ></textarea>
+
                 </div>
             </div>
 
@@ -208,7 +256,7 @@
                         type="checkbox"
                         class="form-check-input"
                         id="exampleCheck1"
-                        [(ngModel)]="subCategoryFormDetails.isActive"
+                        [(ngModel)]="itemFormDetails.isActive"
                     >
                     <label
                         class="form-check-label"
@@ -225,22 +273,22 @@
             type="button"
             class="btn btn-primary"
             *ngIf="!isEdit"
-            (click)="addSubCategory()"
+            (click)="addItem()"
         >
-            Add Subcategory
+            Add Item
         </button>
         <button
             type="button"
             class="btn btn-primary"
             *ngIf="isEdit"
-            (click)="updateSubCategory()"
+            (click)="updateItem()"
         >
-            Update Subcategory
+            Update Item
         </button>
         <button
             type="button"
             class="btn btn-danger"
-            (click)="editSubCategoryModalRef.close()"
+            (click)="addEditItemModalRef.close()"
         >
             Cancel
         </button>

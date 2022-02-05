@@ -1,24 +1,23 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { WebService } from '../../services/web.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
-
 @Component({
-  selector: 'app-item',
-  templateUrl: './item.component.html',
-  styleUrls: ['./item.component.scss']
+  selector: 'app-item-details',
+  templateUrl: './item-details.component.html',
+  styleUrls: ['./item-details.component.scss']
 })
-export class ItemComponent implements OnInit {
-
+export class ItemDetailsComponent implements OnInit {
+  public itemId: any;
   public itemList: any = [];
   public subCategoryList: any = [];
   public languageList: any = [];
   public itemFormDetails: any = {};
-  public addEditItemModalRef: any;
+  public addEditItemDetailsModalRef: any;
   public isEdit: boolean = false;
   page: number = 1;
   pageSize: number = 20;
@@ -26,13 +25,11 @@ export class ItemComponent implements OnInit {
     searchText: '',
   };
   constructor(private router: Router,
+    public activatedRoute: ActivatedRoute,
     private webService: WebService,
     private toastr: ToastrService,
     private modalService: NgbModal,
     private confirmationDialogService: ConfirmationDialogService,) { }
-
-
-
 
   ngOnInit(): void {
     this.checkLogin();
@@ -40,7 +37,8 @@ export class ItemComponent implements OnInit {
 
   checkLogin() {
     if (localStorage.getItem('token') && localStorage.getItem('userid')) {
-      this.getItemList();
+      this.itemId = this.activatedRoute.snapshot.paramMap.get("itemid");
+      this.getItemDetails();
     } else {
       this.toastr.warning('Please login', 'Warning');
       this.router.navigate(['/login']);
@@ -48,44 +46,15 @@ export class ItemComponent implements OnInit {
     }
   }
 
-  getSubCategoryList() {
-    return new Promise(resolve => {
-      let url = `SubCategory?pageNumber=1&pageSize=200`;
-      this.webService.get(url).subscribe((response) => {
-        //  if (response.status == 1) {
-        resolve(response.subCategory);
-        //  }
-      }, (error) => {
-        console.log("error ts: ", error);
-      });
-    });
-  }
-
-  getLanguageList() {
-
-    return new Promise(resolve => {
-      let url = `Language?pageNumber=1&pageSize=200`;
-      this.webService.get(url).subscribe((response) => {
-        //  if (response.status == 1) {
-        resolve(response.language);
-        //  }
-      }, (error) => {
-        console.log("error ts: ", error);
-      });
-    });
-  }
-
-
-
-  getItemList() {
+  getItemDetails() {
     // this.spinnerService.show();
-    let url = `ViewItem?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `ViewItemDetail?id=${this.itemId}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
-      if (response.viewItems.length > 0) {
-        this.itemList = response.viewItems;
+      if (response.viewItemDetails.length > 0) {
+        this.itemList = response.viewItemDetails;
       } else {
         this.itemList = [];
       }
@@ -95,26 +64,22 @@ export class ItemComponent implements OnInit {
     });
   }
 
-  openAddItemModal(template: TemplateRef<any>) {
+  openAddItemDetailsModal(template: TemplateRef<any>) {
     this.itemFormDetails = {
       subCategoryId: '',
       languageId: ''
     };
     this.isEdit = false;
-    this.getSubCategoryList();
-    this.getLanguageList();
-    this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+    this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  async openEditItemModal(template: TemplateRef<any>, obj) {
+  openEditItemDetailsModal(template: TemplateRef<any>, obj) {
     this.itemFormDetails = { ...obj };
     this.isEdit = true;
-    this.subCategoryList = await this.getSubCategoryList();
-    this.languageList = await this.getLanguageList();
-    this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+    this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  addItem() {
+  addItemDetails() {
     if (!this.itemFormDetails.subCategoryId) {
       this.toastr.warning('Please select Sub Category', 'Warning');
       return;
@@ -125,25 +90,25 @@ export class ItemComponent implements OnInit {
     }
 
     if (!this.itemFormDetails.name) {
-      this.toastr.warning('Please enter Item name', 'Warning');
+      this.toastr.warning('Please enter ItemDetails name', 'Warning');
       return;
     }
     if (!this.itemFormDetails.title) {
-      this.toastr.warning('Please enter Item title', 'Warning');
+      this.toastr.warning('Please enter ItemDetails title', 'Warning');
       return;
     }
-    let url = `ViewItem`;
+    let url = `ViewItemDetails`;
     // this.spinnerService.show();
     this.webService.post(url, this.itemFormDetails).subscribe((response: any) => {
-      this.getItemList();
-      this.toastr.success('Item added successfully', 'Success');
-      this.addEditItemModalRef.close();
+      this.getItemDetails();
+      this.toastr.success('ItemDetails added successfully', 'Success');
+      this.addEditItemDetailsModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  updateItem() {
+  updateItemDetails() {
     if (!this.itemFormDetails.subCategoryId) {
       this.toastr.warning('Please select Sub Category', 'Warning');
       return;
@@ -154,35 +119,35 @@ export class ItemComponent implements OnInit {
     }
 
     if (!this.itemFormDetails.name) {
-      this.toastr.warning('Please enter Item name', 'Warning');
+      this.toastr.warning('Please enter ItemDetails name', 'Warning');
       return;
     }
     if (!this.itemFormDetails.title) {
-      this.toastr.warning('Please enter Item title', 'Warning');
+      this.toastr.warning('Please enter ItemDetails title', 'Warning');
       return;
     }
-    let url = `ViewItem?id=${this.itemFormDetails.id}`;
+    let url = `ViewItemDetails?id=${this.itemFormDetails.id}`;
     // this.spinnerService.show();
     this.webService.put(url, this.itemFormDetails).subscribe((response: any) => {
-      this.getItemList();
-      this.toastr.success('Item updated successfully', 'Success');
-      this.addEditItemModalRef.close();
+      this.getItemDetails();
+      this.toastr.success('ItemDetails updated successfully', 'Success');
+      this.addEditItemDetailsModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
   }
 
-  deleteItem(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item  ${obj.name}?`)
+  deleteItemDetails(obj) {
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete ItemDetails  ${obj.name}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `ViewItem?id=${obj.id}`;
+          let url = `ViewItemDetails?id=${obj.id}`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
             //  if (response.is_valid_session) {
             //   if (response.status == 1) {
-            this.getItemList();
+            this.getItemDetails();
             this.toastr.success(response.message, 'Success');
             // } else {
             //   this.toastr.error(response.message, 'Error');
@@ -200,7 +165,4 @@ export class ItemComponent implements OnInit {
   }
 
 
-  viewDetails(item) {
-    this.router.navigate(['/item-details/' + item.id]);
-  }
 }

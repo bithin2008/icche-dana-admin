@@ -50,6 +50,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-dark btn-sm mr-2"
+                                                (click)="viewDetails(item)"
                                             >
                                                 <i
                                                     class="fa fa-eye"
@@ -178,7 +179,7 @@
                     >
                         <option value>Select subcategory</option>
                         <option
-                            value="{{subcategory.id}}"
+                            value="{{subcategory.subCategoryId}}"
                             *ngFor="let subcategory of subCategoryList"
                         >
                             {{subcategory.subCategoryName}}
@@ -196,7 +197,7 @@
                     >
                         <option value>Select language</option>
                         <option
-                            value="{{language.id}}"
+                            value="{{language.languageId}}"
                             *ngFor="let language of languageList"
                         >
                             {{language.languageName}}

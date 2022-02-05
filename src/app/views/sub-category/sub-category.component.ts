@@ -46,17 +46,17 @@ export class SubCategoryComponent implements OnInit {
   }
 
   getCategoryList() {
-    // this.spinnerService.show();
-    let url = `Category?pageNumber=1&pageSize=200`;
-    this.webService.get(url).subscribe((response: any) => {
-      //  this.spinnerService.hide();
-      // if (response.status == 1) {
-      this.categoryList = response.category;
-      // }
-
-    }, (error) => {
-      console.log('error', error);
+    return new Promise(resolve => {
+      let url = `Category?pageNumber=1&pageSize=200`;
+      this.webService.get(url).subscribe((response) => {
+        //  if (response.status == 1) {
+        resolve(response.category);
+        //  }
+      }, (error) => {
+        console.log("error ts: ", error);
+      });
     });
+
   }
 
   getSubCategoryList() {
@@ -75,23 +75,30 @@ export class SubCategoryComponent implements OnInit {
     });
   }
 
-  openAddSubCategoryModal(template: TemplateRef<any>) {
+  async openAddSubCategoryModal(template: TemplateRef<any>) {
     this.subCategoryFormDetails = {
       categoryId: ''
     };
+    this.categoryList = await this.getCategoryList();
     this.isEdit = false;
     this.editSubCategoryModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
   }
 
-  openEditSubCategoryModal(template: TemplateRef<any>, obj) {
+  async openEditSubCategoryModal(template: TemplateRef<any>, obj) {
     this.subCategoryFormDetails = { ...obj };
+    this.categoryList = await this.getCategoryList();
+    // this.categoryList.forEach(element => {
+    //   if (element.categoryId == this.subCategoryFormDetails.categoryId) {
+    //     this.subCategoryFormDetails.categoryId = element.categoryId;
+    //   }
+    // });
     this.isEdit = true;
     this.editSubCategoryModalRef = this.modalService.open(template, { centered: true, backdrop: 'static' });
   }
 
   addSubCategory() {
     if (!this.subCategoryFormDetails.categoryId) {
-      this.toastr.warning('Please select category name', 'Warning');
+      this.toastr.warning('Please select category', 'Warning');
       return;
     }
     if (!this.subCategoryFormDetails.subCategoryName) {
@@ -116,7 +123,7 @@ export class SubCategoryComponent implements OnInit {
 
   updateSubCategory() {
     if (!this.subCategoryFormDetails.categoryId) {
-      this.toastr.warning('Please select category name', 'Warning');
+      this.toastr.warning('Please select category', 'Warning');
       return;
     }
     if (!this.subCategoryFormDetails.subCategoryName) {

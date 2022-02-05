@@ -4,12 +4,14 @@
 // Import styles
 @import "~@coreui/coreui/scss/coreui";
 
+@import './star-rating.css';
+
 // If you want to add something do it here
 @import "custom";
 
 .app-header .nav-item {
     position: relative;
-    min-width: 170px;
+    min-width: 190px;
     margin: 0;
     text-align: center;
   }
