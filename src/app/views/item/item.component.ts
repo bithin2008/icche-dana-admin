@@ -201,6 +201,6 @@ export class ItemComponent implements OnInit {
 
 
   viewDetails(item) {
-    this.router.navigate(['/item-details/' + item.id]);
+    this.router.navigate(['/item-details/' + item.viewItemId]);
   }
 }

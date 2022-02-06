@@ -1,37 +1,44 @@
 <div class="animated fadeIn">
     <div class="row">
-        <div class="col-md-12 text-right">
-            <button
-                class="btn btn-primary mb-3 mt-3"
-                (click)="openAddItemModal(addEditItemModal)"
-            >
-                Add Item
-            </button>
-        </div>
+
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
-                    Item
+                    Item Details
                 </div>
                 <div class="card-body">
+                    <div class="col-md-12 text-right">
+                        <button
+                            class="btn btn-primary mb-3 mt-3"
+                            (click)="openAddItemDetailsModal(addEditViewItemModal)"
+                        >
+                            Add View Item
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Title</th>
-                                    <th>Sub title</th>
+                                    <th>#</th>
+                                    <th>Director</th>
+                                    <th>Actors</th>
+                                    <th>IMDB Rating</th>
                                     <th>Date</th>
                                     <th>Status</th>
-                                    <th width="150"></th>
+                                    <th width="120"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="itemList?.length>0">
-                                    <tr *ngFor="let item of itemList">
-                                        <td>{{item?.title}}</td>
-                                        <td>{{item?.subTitle}}</td>
-                                        <td>{{item?.createDate | date:'medium'}}</td>
+                                <ng-container>
+
+                                    <tr *ngFor="let item of itemList.viewItemDetails; let i = index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{item?.director}}</td>
+                                        <td>{{item?.actors}}</td>
+                                        <td>{{item?.imdbRating}}</td>
+                                        <td>{{item?.time}}</td>
+
                                         <td>
                                             <span
                                                 *ngIf="item.isActive"
@@ -47,16 +54,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <button
-                                                type="button"
-                                                class="btn btn-dark btn-sm mr-2"
-                                                (click)="viewDetails(item)"
-                                            >
-                                                <i
-                                                    class="fa fa-eye"
-                                                    aria-hidden="true"
-                                                ></i>
-                                            </button>
+
                                             <button
                                                 type="button"
                                                 class="btn btn-primary btn-sm mr-2"
@@ -80,7 +78,7 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="itemList?.length==0">
+                                <ng-container *ngIf="itemList?.viewItemDetails?.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
@@ -150,7 +148,7 @@
 
 </div>
 
-<ng-template #addEditItemModal>
+<ng-template #addEditViewItemModal>
     <div class="modal-header">
         <h4
             class="modal-title"
@@ -162,7 +160,7 @@
             type="button"
             class="close"
             aria-label="Close"
-            (click)="addEditItemModalRef.close()"
+            (click)="addEditItemDetailsModalRef.close()"
         >
             <span aria-hidden="true">&times;</span>
         </button>
@@ -179,7 +177,7 @@
                     >
                         <option value>Select subcategory</option>
                         <option
-                            value="{{subcategory.id}}"
+                            value="{{subcategory.subCategoryId}}"
                             *ngFor="let subcategory of subCategoryList"
                         >
                             {{subcategory.subCategoryName}}
@@ -187,66 +185,60 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="pname">Select Language:</label>
-                    <select
-                        class="form-control"
-                        id="exampleFormControlSelect1"
-                        [(ngModel)]="itemFormDetails.languageId"
-                    >
-                        <option value>Select language</option>
-                        <option
-                            value="{{language.id}}"
-                            *ngFor="let language of languageList"
-                        >
-                            {{language.languageName}}
-                        </option>
-                    </select>
-                </div>
-            </div>
+            <div class="col-md-6"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Item Name:</label>
+                    <label for="pname">Time:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.name"
+                        [(ngModel)]="itemFormDetails.time"
                         class="form-control"
                     >
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Item Title:</label>
+                    <label for="pname">IMDB Rating:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.title"
+                        [(ngModel)]="itemFormDetails.imdbRating"
                         class="form-control"
                     >
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Item Subtitle:</label>
+                    <label for="pname">Director:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.subTitle"
+                        [(ngModel)]="itemFormDetails.director"
                         class="form-control"
                     >
                 </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-4">
                 <div class="form-group">
-                    <label for="pname">Description:</label>
-                    <textarea
+                    <label for="pname">Actors:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.actors"
                         class="form-control"
-                        name="subTitle"
-                        [(ngModel)]="itemFormDetails.description"
-                    ></textarea>
-
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Maturity Rating:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.maturityRating"
+                        class="form-control"
+                    >
                 </div>
             </div>
 
@@ -261,6 +253,22 @@
                     <label
                         class="form-check-label"
                         for="exampleCheck1"
+                    >
+                        Is Active
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="isactive"
+                        [(ngModel)]="itemFormDetails.isActive"
+                    >
+                    <label
+                        class="form-check-label"
+                        for="isactive"
                     >
                         Is Active
                     </label>
@@ -288,7 +296,7 @@
         <button
             type="button"
             class="btn btn-danger"
-            (click)="addEditItemModalRef.close()"
+            (click)="addEditItemDetailsModalRef.close()"
         >
             Cancel
         </button>

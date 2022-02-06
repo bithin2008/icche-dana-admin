@@ -46,18 +46,28 @@ export class ItemDetailsComponent implements OnInit {
     }
   }
 
+  getLanguageList() {
+
+    return new Promise(resolve => {
+      let url = `Language?pageNumber=1&pageSize=200`;
+      this.webService.get(url).subscribe((response) => {
+        //  if (response.status == 1) {
+        resolve(response.language);
+        //  }
+      }, (error) => {
+        console.log("error ts: ", error);
+      });
+    });
+  }
+
   getItemDetails() {
     // this.spinnerService.show();
-    let url = `ViewItemDetail?id=${this.itemId}`;
-    if (this.filterForm.searchText)
-      url = url + `&searchText=${this.filterForm.searchText}`;
+    let url = `ViewItem/${this.itemId}`;
     this.webService.get(url).subscribe((response: any) => {
       //  this.spinnerService.hide();
-      if (response.viewItemDetails.length > 0) {
-        this.itemList = response.viewItemDetails;
-      } else {
-        this.itemList = [];
-      }
+      // if (response.viewItemDetails.length > 0) {
+      this.itemList = response[0];
+
 
     }, (error) => {
       console.log('error', error);

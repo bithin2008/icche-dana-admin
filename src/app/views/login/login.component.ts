@@ -54,11 +54,9 @@ export class LoginComponent {
     //  this.spinnerService.show();
     this.webService.login(data, url).subscribe((response: any) => {
       //  this.spinnerService.hide();
-      if (response.statusCode === 400) {
-        this.toastr.error(response.message, 'Warning');
-      } else {
+      if (response.statusCode === 200) {
         localStorage.setItem("token", response.token);
-        localStorage.setItem("userid", response.id);
+        localStorage.setItem("userid", response.userId);
         let firstName = response.firstName;
         let lastName = response.lastName;
         let username = firstName + ' ' + lastName;
@@ -70,6 +68,9 @@ export class LoginComponent {
           setTimeout(() => {
             this.router.navigate([`/users`]);
           }, 2000);
+
+      } else if (response.statusCode === 401) {
+        this.toastr.error('Wrong credential', 'Warning');
       }
       //  if (response.result) {
 
