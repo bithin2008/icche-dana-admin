@@ -14,6 +14,7 @@ import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-d
 export class ItemDetailsComponent implements OnInit {
   public itemId: any;
   public itemList: any = [];
+  public genreList: any = [];
   public subCategoryList: any = [];
   public languageList: any = [];
   public itemFormDetails: any = {};
@@ -46,13 +47,16 @@ export class ItemDetailsComponent implements OnInit {
     }
   }
 
-  getLanguageList() {
+
+
+
+  getGenreList() {
 
     return new Promise(resolve => {
-      let url = `Language?pageNumber=1&pageSize=200`;
+      let url = `Genre?pageNumber=1&pageSize=200`;
       this.webService.get(url).subscribe((response) => {
         //  if (response.status == 1) {
-        resolve(response.language);
+        resolve(response.genres);
         //  }
       }, (error) => {
         console.log("error ts: ", error);
@@ -74,40 +78,52 @@ export class ItemDetailsComponent implements OnInit {
     });
   }
 
-  openAddItemDetailsModal(template: TemplateRef<any>) {
+  async openAddItemDetailsModal(template: TemplateRef<any>) {
     this.itemFormDetails = {
-      subCategoryId: '',
-      languageId: ''
+      genreId: '',
+      isMultipleType: false
     };
     this.isEdit = false;
+    this.genreList = await this.getGenreList();
     this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
-  openEditItemDetailsModal(template: TemplateRef<any>, obj) {
+  async openEditItemDetailsModal(template: TemplateRef<any>, obj) {
     this.itemFormDetails = { ...obj };
     this.isEdit = true;
+    this.genreList = await this.getGenreList();
     this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
   addItemDetails() {
-    if (!this.itemFormDetails.subCategoryId) {
-      this.toastr.warning('Please select Sub Category', 'Warning');
-      return;
-    }
-    if (!this.itemFormDetails.languageId) {
-      this.toastr.warning('Please select language', 'Warning');
+    if (!this.itemFormDetails.genreId) {
+      this.toastr.warning('Please select Genre', 'Warning');
       return;
     }
 
-    if (!this.itemFormDetails.name) {
-      this.toastr.warning('Please enter ItemDetails name', 'Warning');
+    if (!this.itemFormDetails.time) {
+      this.toastr.warning('Please enter time', 'Warning');
       return;
     }
-    if (!this.itemFormDetails.title) {
-      this.toastr.warning('Please enter ItemDetails title', 'Warning');
+    if (!this.itemFormDetails.imdbRating) {
+      this.toastr.warning('Please enter IMDB rating', 'Warning');
       return;
     }
-    let url = `ViewItemDetails`;
+    if (!this.itemFormDetails.director) {
+      this.toastr.warning('Please enter Director', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.actors) {
+      this.toastr.warning('Please enter actor', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.maturityRating) {
+      this.toastr.warning('Please enter maturity rating', 'Warning');
+      return;
+    }
+
+    this.itemFormDetails.viewItemId = this.itemId;
+    let url = `ViewItemDetail`;
     // this.spinnerService.show();
     this.webService.post(url, this.itemFormDetails).subscribe((response: any) => {
       this.getItemDetails();
@@ -119,24 +135,33 @@ export class ItemDetailsComponent implements OnInit {
   }
 
   updateItemDetails() {
-    if (!this.itemFormDetails.subCategoryId) {
-      this.toastr.warning('Please select Sub Category', 'Warning');
-      return;
-    }
-    if (!this.itemFormDetails.languageId) {
-      this.toastr.warning('Please select language', 'Warning');
+    if (!this.itemFormDetails.genreId) {
+      this.toastr.warning('Please select Genre', 'Warning');
       return;
     }
 
-    if (!this.itemFormDetails.name) {
-      this.toastr.warning('Please enter ItemDetails name', 'Warning');
+    if (!this.itemFormDetails.time) {
+      this.toastr.warning('Please enter time', 'Warning');
       return;
     }
-    if (!this.itemFormDetails.title) {
-      this.toastr.warning('Please enter ItemDetails title', 'Warning');
+    if (!this.itemFormDetails.imdbRating) {
+      this.toastr.warning('Please enter IMDB rating', 'Warning');
       return;
     }
-    let url = `ViewItemDetails?id=${this.itemFormDetails.id}`;
+    if (!this.itemFormDetails.director) {
+      this.toastr.warning('Please enter Director', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.actors) {
+      this.toastr.warning('Please enter actor', 'Warning');
+      return;
+    }
+    if (!this.itemFormDetails.maturityRating) {
+      this.toastr.warning('Please enter maturity rating', 'Warning');
+      return;
+    }
+
+    let url = `ViewItemDetail`;
     // this.spinnerService.show();
     this.webService.put(url, this.itemFormDetails).subscribe((response: any) => {
       this.getItemDetails();
@@ -148,10 +173,10 @@ export class ItemDetailsComponent implements OnInit {
   }
 
   deleteItemDetails(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete ItemDetails  ${obj.name}?`)
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item Details ?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `ViewItemDetails?id=${obj.id}`;
+          let url = `ViewItemDetail?ViewItemDetailId=${obj.viewItemDetailId}&isActiveOrDelete=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();

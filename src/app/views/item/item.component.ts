@@ -95,14 +95,14 @@ export class ItemComponent implements OnInit {
     });
   }
 
-  openAddItemModal(template: TemplateRef<any>) {
+  async openAddItemModal(template: TemplateRef<any>) {
     this.itemFormDetails = {
       subCategoryId: '',
       languageId: ''
     };
     this.isEdit = false;
-    this.getSubCategoryList();
-    this.getLanguageList();
+    this.subCategoryList = await this.getSubCategoryList();
+    this.languageList = await this.getLanguageList();
     this.addEditItemModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
@@ -176,7 +176,7 @@ export class ItemComponent implements OnInit {
     this.confirmationDialogService.confirm('Delete', `Do you want to delete Item  ${obj.name}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `ViewItem?id=${obj.id}`;
+          let url = `ViewItem?viewItemId=${obj.viewItemId}`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();

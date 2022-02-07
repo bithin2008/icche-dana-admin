@@ -1,7 +1,7 @@
-<div class="animated fadeIn">
+<div class="animated fadeIn  mt-3">
     <div class="row">
 
-        <div class="col-lg-12">
+        <div class="col-lg-12  mt-3">
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
@@ -24,7 +24,7 @@
                                     <th>Director</th>
                                     <th>Actors</th>
                                     <th>IMDB Rating</th>
-                                    <th>Date</th>
+                                    <th>Time</th>
                                     <th>Status</th>
                                     <th width="120"></th>
                                 </tr>
@@ -58,7 +58,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-primary btn-sm mr-2"
-                                                (click)="openEditItemModal(addEditItemModal,item)"
+                                                (click)="openEditItemDetailsModal(addEditViewItemModal,item)"
                                             >
                                                 <i
                                                     class="fa fa-edit"
@@ -68,7 +68,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-danger btn-sm"
-                                                (click)="deleteItem(item)"
+                                                (click)="deleteItemDetails(item)"
                                             >
                                                 <i
                                                     class="fa fa-trash"
@@ -145,7 +145,152 @@
             </div>
         </div>
     </div>
+    <div class="row">
 
+        <div class="col-lg-12  mt-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i>
+                    Item Details
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 text-right">
+                        <button
+                            class="btn btn-primary mb-3 mt-3"
+                            (click)="openAddItemMaterialModal(addEditViewMaterialModal)"
+                        >
+                            Add View Item
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Director</th>
+                                    <th>Actors</th>
+                                    <th>IMDB Rating</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th width="120"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container>
+
+                                    <tr *ngFor="let item of itemList.viewItemMaterial; let i = index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{item?.director}}</td>
+                                        <td>{{item?.actors}}</td>
+                                        <td>{{item?.imdbRating}}</td>
+                                        <td>{{item?.time}}</td>
+
+                                        <td>
+                                            <span
+                                                *ngIf="item.isActive"
+                                                class="badge badge-success"
+                                            >
+                                                Active
+                                            </span>
+                                            <span
+                                                *ngIf="!item.isActive"
+                                                class="badge badge-danger"
+                                            >
+                                                Inactive
+                                            </span>
+                                        </td>
+                                        <td>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-sm mr-2"
+                                                (click)="openEditItemMaterialModal(addEditViewMaterialModal,item)"
+                                            >
+                                                <i
+                                                    class="fa fa-edit"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="deleteItem(item)"
+                                            >
+                                                <i
+                                                    class="fa fa-trash"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="itemList?.viewItemMaterial?.length==0">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="text-center"
+                                        >
+                                            Item not found
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Prev
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                1
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                2
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                3
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                4
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <ng-template #addEditViewItemModal>
@@ -169,18 +314,18 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select SubCategory:</label>
+                    <label for="pname">Select Genre:</label>
                     <select
                         class="form-control"
                         id="exampleFormControlSelect1"
-                        [(ngModel)]="itemFormDetails.subCategoryId"
+                        [(ngModel)]="itemFormDetails.genreId"
                     >
-                        <option value>Select subcategory</option>
+                        <option value>Select Genre</option>
                         <option
-                            value="{{subcategory.subCategoryId}}"
-                            *ngFor="let subcategory of subCategoryList"
+                            value="{{genre.genreId}}"
+                            *ngFor="let genre of genreList"
                         >
-                            {{subcategory.subCategoryName}}
+                            {{genre.genreName}}
                         </option>
                     </select>
                 </div>
@@ -190,7 +335,7 @@
                 <div class="form-group">
                     <label for="pname">Time:</label>
                     <input
-                        type="text"
+                        type="number"
                         name="pname"
                         [(ngModel)]="itemFormDetails.time"
                         class="form-control"
@@ -264,13 +409,13 @@
                         type="checkbox"
                         class="form-check-input"
                         id="isactive"
-                        [(ngModel)]="itemFormDetails.isActive"
+                        [(ngModel)]="itemFormDetails.isMultipleType"
                     >
                     <label
                         class="form-check-label"
                         for="isactive"
                     >
-                        Is Active
+                        Is isMultipleType
                     </label>
                 </div>
             </div>
@@ -281,22 +426,178 @@
             type="button"
             class="btn btn-primary"
             *ngIf="!isEdit"
-            (click)="addItem()"
+            (click)="addItemDetails()"
         >
-            Add Item
+            Add View Item
         </button>
         <button
             type="button"
             class="btn btn-primary"
             *ngIf="isEdit"
-            (click)="updateItem()"
+            (click)="updateItemDetails()"
         >
-            Update Item
+            Update View Item
         </button>
         <button
             type="button"
             class="btn btn-danger"
             (click)="addEditItemDetailsModalRef.close()"
+        >
+            Cancel
+        </button>
+
+    </div>
+</ng-template>
+
+<ng-template #addEditViewMaterialModal>
+    <div class="modal-header">
+        <h4
+            class="modal-title"
+            id="modal-basic-title"
+        >
+            Item Details
+        </h4>
+        <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="addEditItemMaterialModalRef.close()"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select Genre:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="itemFormDetails.genreId"
+                    >
+                        <option value>Select Genre</option>
+                        <option
+                            value="{{genre.genreId}}"
+                            *ngFor="let genre of genreList"
+                        >
+                            {{genre.genreName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Time:</label>
+                    <input
+                        type="number"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.time"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">IMDB Rating:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.imdbRating"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Director:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.director"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Actors:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.actors"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Maturity Rating:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormDetails.maturityRating"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="exampleCheck1"
+                        [(ngModel)]="itemFormDetails.isActive"
+                    >
+                    <label
+                        class="form-check-label"
+                        for="exampleCheck1"
+                    >
+                        Is Active
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="isactive"
+                        [(ngModel)]="itemFormDetails.isMultipleType"
+                    >
+                    <label
+                        class="form-check-label"
+                        for="isactive"
+                    >
+                        Is isMultipleType
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="!isEdit"
+            (click)="addItemMaterial()"
+        >
+            Add View Item
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="isEdit"
+            (click)="updateItemMaterial()"
+        >
+            Update View Item
+        </button>
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="addEditItemMaterialModalRef.close()"
         >
             Cancel
         </button>
