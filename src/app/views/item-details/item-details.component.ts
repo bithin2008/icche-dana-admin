@@ -18,7 +18,9 @@ export class ItemDetailsComponent implements OnInit {
   public subCategoryList: any = [];
   public languageList: any = [];
   public itemFormDetails: any = {};
+  public itemFormMaterial: any = {};
   public addEditItemDetailsModalRef: any;
+  public addEditItemMaterialModalRef: any;
   public isEdit: boolean = false;
   page: number = 1;
   pageSize: number = 20;
@@ -88,11 +90,28 @@ export class ItemDetailsComponent implements OnInit {
     this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
+  async openAddItemMaterialModal(template: TemplateRef<any>) {
+    this.itemFormMaterial = {
+      genreId: '',
+      isMultipleType: false
+    };
+    this.isEdit = false;
+    // this.genreList = await this.getGenreList();
+    this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+  }
+
   async openEditItemDetailsModal(template: TemplateRef<any>, obj) {
     this.itemFormDetails = { ...obj };
     this.isEdit = true;
     this.genreList = await this.getGenreList();
     this.addEditItemDetailsModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
+  }
+
+  async openEditItemMaterialModal(template: TemplateRef<any>, obj) {
+    this.itemFormMaterial = { ...obj };
+    this.isEdit = true;
+    this.genreList = await this.getGenreList();
+    this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
   addItemDetails() {
@@ -129,6 +148,32 @@ export class ItemDetailsComponent implements OnInit {
       this.getItemDetails();
       this.toastr.success('ItemDetails added successfully', 'Success');
       this.addEditItemDetailsModalRef.close();
+    }, (error) => {
+      console.log('error', error);
+    });
+  }
+
+  addItemMaterial() {
+    if (!this.itemFormMaterial.sourceLink) {
+      this.toastr.warning('Please enter source', 'Warning');
+      return;
+    }
+    if (!this.itemFormMaterial.minutes) {
+      this.toastr.warning('Please enter minute', 'Warning');
+      return;
+    }
+    if (!this.itemFormMaterial.episodeNumber) {
+      this.toastr.warning('Please enter episodeNumber', 'Warning');
+      return;
+    }
+
+    this.itemFormMaterial.viewItemId = this.itemId;
+    let url = `ViewitemMaterial`;
+    // this.spinnerService.show();
+    this.webService.post(url, this.itemFormMaterial).subscribe((response: any) => {
+      this.getItemDetails();
+      this.toastr.success('Item material added successfully', 'Success');
+      this.addEditItemMaterialModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
@@ -172,11 +217,35 @@ export class ItemDetailsComponent implements OnInit {
     });
   }
 
+  updateItemMaterial() {
+    if (!this.itemFormMaterial.sourceLink) {
+      this.toastr.warning('Please enter source', 'Warning');
+      return;
+    }
+    if (!this.itemFormMaterial.minutes) {
+      this.toastr.warning('Please enter minute', 'Warning');
+      return;
+    }
+    if (!this.itemFormMaterial.episodeNumber) {
+      this.toastr.warning('Please enter episodeNumber', 'Warning');
+      return;
+    }
+    let url = `ViewitemMaterial`;
+    // this.spinnerService.show();
+    this.webService.put(url, this.itemFormMaterial).subscribe((response: any) => {
+      this.getItemDetails();
+      this.toastr.success('Item material updated successfully', 'Success');
+      this.addEditItemMaterialModalRef.close();
+    }, (error) => {
+      console.log('error', error);
+    });
+  }
+
   deleteItemDetails(obj) {
     this.confirmationDialogService.confirm('Delete', `Do you want to delete Item Details ?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `ViewItemDetail?ViewItemDetailId=${obj.viewItemDetailId}&isActiveOrDelete=true&isActiveOrDelete=Delete`;
+          let url = `ViewItemDetail?viewItemDetailId=${obj.viewItemDetailId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
@@ -199,5 +268,30 @@ export class ItemDetailsComponent implements OnInit {
       .catch((error) => { });
   }
 
-
+  deleteItemMaterial(obj) {
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete Item Material ?`)
+      .then((confirmed) => {
+        if (confirmed) {
+          let url = `ViewitemMaterial?viewitemMaterialId=${obj.viewitemMaterialId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
+          // this.spinnerService.show();
+          this.webService.delete(url).subscribe((response: any) => {
+            // this.spinnerService.hide();
+            //  if (response.is_valid_session) {
+            //   if (response.status == 1) {
+            this.getItemDetails();
+            this.toastr.success(response.message, 'Success');
+            // } else {
+            //   this.toastr.error(response.message, 'Error');
+            // }
+            // } else {
+            //   this.toastr.error('Your Session expired', 'Error');
+            //    this.router.navigate(['/login'], { queryParams: { return_url: `builders/${this.builderId}` } });
+            // }
+          }, (error) => {
+            console.log('error', error);
+          });
+        }
+      })
+      .catch((error) => { });
+  }
 }

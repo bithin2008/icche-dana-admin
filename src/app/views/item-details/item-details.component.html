@@ -151,7 +151,7 @@
             <div class="card">
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i>
-                    Item Details
+                    Item Material
                 </div>
                 <div class="card-body">
                     <div class="col-md-12 text-right">
@@ -159,7 +159,7 @@
                             class="btn btn-primary mb-3 mt-3"
                             (click)="openAddItemMaterialModal(addEditViewMaterialModal)"
                         >
-                            Add View Item
+                            Add View Item Material
                         </button>
                     </div>
                     <div class="table-responsive">
@@ -167,24 +167,21 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Director</th>
-                                    <th>Actors</th>
-                                    <th>IMDB Rating</th>
-                                    <th>Time</th>
+                                    <th>Episode</th>
+                                    <th>Minutes</th>
+                                    <th>External</th>
                                     <th>Status</th>
                                     <th width="120"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container>
+                                <ng-container *ngIf="itemList?.viewitemMaterials?.length>0">
 
-                                    <tr *ngFor="let item of itemList.viewItemMaterial; let i = index">
+                                    <tr *ngFor="let item of itemList.viewitemMaterials; let i = index">
                                         <td>{{i+1}}</td>
-                                        <td>{{item?.director}}</td>
-                                        <td>{{item?.actors}}</td>
-                                        <td>{{item?.imdbRating}}</td>
-                                        <td>{{item?.time}}</td>
-
+                                        <td>{{item?.episodeNumber}}</td>
+                                        <td>{{item?.minutes}}</td>
+                                        <td>{{item?.isExternal ?'Yes':'No'}}</td>
                                         <td>
                                             <span
                                                 *ngIf="item.isActive"
@@ -214,7 +211,7 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-danger btn-sm"
-                                                (click)="deleteItem(item)"
+                                                (click)="deleteItemMaterial(item)"
                                             >
                                                 <i
                                                     class="fa fa-trash"
@@ -224,7 +221,7 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                                <ng-container *ngIf="itemList?.viewItemMaterial?.length==0">
+                                <ng-container *ngIf="itemList?.viewitemMaterials?.length==0">
                                     <tr>
                                         <td
                                             colspan="6"
@@ -468,88 +465,47 @@
     </div>
     <div class="modal-body">
         <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="pname">Source Link:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormMaterial.sourceLink"
+                        class="form-control"
+                    >
+                </div>
+            </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select Genre:</label>
-                    <select
-                        class="form-control"
-                        id="exampleFormControlSelect1"
-                        [(ngModel)]="itemFormDetails.genreId"
-                    >
-                        <option value>Select Genre</option>
-                        <option
-                            value="{{genre.genreId}}"
-                            *ngFor="let genre of genreList"
-                        >
-                            {{genre.genreName}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6"></div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">Time:</label>
-                    <input
-                        type="number"
-                        name="pname"
-                        [(ngModel)]="itemFormDetails.time"
-                        class="form-control"
-                    >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">IMDB Rating:</label>
+                    <label for="pname">Minutes:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="itemFormDetails.imdbRating"
-                        class="form-control"
-                    >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">Director:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormDetails.director"
-                        class="form-control"
-                    >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">Actors:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormDetails.actors"
-                        class="form-control"
-                    >
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">Maturity Rating:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormDetails.maturityRating"
+                        [(ngModel)]="itemFormMaterial.minutes"
                         class="form-control"
                     >
                 </div>
             </div>
 
             <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Episode Number:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="itemFormMaterial.episodeNumber"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="form-group form-check">
                     <input
                         type="checkbox"
                         class="form-check-input"
                         id="exampleCheck1"
-                        [(ngModel)]="itemFormDetails.isActive"
+                        [(ngModel)]="itemFormMaterial.isActive"
                     >
                     <label
                         class="form-check-label"
@@ -564,14 +520,14 @@
                     <input
                         type="checkbox"
                         class="form-check-input"
-                        id="isactive"
-                        [(ngModel)]="itemFormDetails.isMultipleType"
+                        id="isExternal"
+                        [(ngModel)]="itemFormMaterial.isExternal"
                     >
                     <label
                         class="form-check-label"
-                        for="isactive"
+                        for="isExternal"
                     >
-                        Is isMultipleType
+                        Is External
                     </label>
                 </div>
             </div>
