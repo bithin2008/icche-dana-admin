@@ -20,8 +20,7 @@
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Title</th>
-                                    <th>Sub title</th>
+                                    <th>Description</th>
                                     <th>Date</th>
                                     <th>Status</th>
                                     <th width="150"></th>
@@ -30,9 +29,8 @@
                             <tbody>
                                 <ng-container *ngIf="subscriptionList?.length>0">
                                     <tr *ngFor="let subscription of subscriptionList">
-                                        <td>{{subscription?.name}}</td>
-                                        <td>{{subscription?.title}}</td>
-                                        <td>{{subscription?.subTitle}}</td>
+                                        <td>{{subscription?.typename}}</td>
+                                        <td>{{subscription?.typeDescription}}</td>
                                         <td>
                                             {{subscription?.createDate | date:'medium'}}
                                         </td>
@@ -175,80 +173,86 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select SubCategory:</label>
+                    <label for="pname">Select Type:</label>
                     <select
                         class="form-control"
                         id="exampleFormControlSelect1"
-                        [(ngModel)]="subscriptionFormDetails.subCategoryId"
+                        [(ngModel)]="subscriptionFormDetails.typeId"
                     >
-                        <option value>Select subcategory</option>
+                        <option value>Select Type</option>
                         <option
-                            value="{{subcategory.subCategoryId}}"
-                            *ngFor="let subcategory of subCategoryList"
+                            value="{{type.typeId}}"
+                            *ngFor="let type of typeList"
                         >
-                            {{subcategory.subCategoryName}}
+                            {{type.name}}
                         </option>
                     </select>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="pname">Select Language:</label>
+                    <label for="pname">Select Offer:</label>
                     <select
                         class="form-control"
                         id="exampleFormControlSelect1"
-                        [(ngModel)]="subscriptionFormDetails.languageId"
+                        [(ngModel)]="subscriptionFormDetails.offerId"
                     >
-                        <option value>Select language</option>
+                        <option value>Select Offer</option>
                         <option
-                            value="{{language.languageId}}"
-                            *ngFor="let language of languageList"
+                            value="{{offer.offerId}}"
+                            *ngFor="let offer of offerList"
                         >
-                            {{language.languageName}}
+                            {{offer.name}}
                         </option>
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="pname">Subscription Name:</label>
                     <input
                         type="text"
                         name="pname"
-                        [(ngModel)]="subscriptionFormDetails.name"
+                        [(ngModel)]="subscriptionFormDetails.typename"
                         class="form-control"
                     >
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
+
                 <div class="form-group">
-                    <label for="pname">Subscription Title:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="subscriptionFormDetails.title"
-                        class="form-control"
-                    >
+                    <label for="pname">Subscription From:</label>
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            class="form-control"
+                            #startDate="bsDatepicker"
+                            [minDate]="minDate"
+                            bsDatepicker
+                            [bsConfig]="{ containerClass: 'theme-dark-blue',showTodayButton: false, todayPosition: 'center',showClearButton: false, clearPosition: 'right',isAnimated: true,adaptivePosition: true,dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                            [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="subscriptionFormDetails.subcriptionFrom"
+                        >
+                        <span
+                            class=" input-group-prepend"
+                            (click)="startDate.toggle()"
+                            [attr.aria-expanded]="startDate.isOpen"
+                        >
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="pname">Subscription Subtitle:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="subscriptionFormDetails.subTitle"
-                        class="form-control"
-                    >
-                </div>
-            </div>
+
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="pname">Description:</label>
                     <textarea
                         class="form-control"
                         name="subTitle"
-                        [(ngModel)]="subscriptionFormDetails.description"
+                        [(ngModel)]="subscriptionFormDetails.typeDescription"
                     ></textarea>
 
                 </div>

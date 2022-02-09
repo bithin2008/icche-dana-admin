@@ -5,6 +5,7 @@ import { WebService } from '../../services/web.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
 
 @Component({
@@ -20,6 +21,7 @@ export class SubscriptionComponent implements OnInit {
   public subscriptionFormDetails: any = {};
   public addEditSubscriptionModalRef: any;
   public isEdit: boolean = false;
+  public minDate: any;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -39,7 +41,7 @@ export class SubscriptionComponent implements OnInit {
   }
 
   checkLogin() {
-    if (localStorage.getSubscription('token') && localStorage.getSubscription('userid')) {
+    if (localStorage.getItem('token') && localStorage.getItem('userid')) {
       this.getSubscriptionList();
     } else {
       this.toastr.warning('Please login', 'Warning');
@@ -78,7 +80,7 @@ export class SubscriptionComponent implements OnInit {
 
   getSubscriptionList() {
     // this.spinnerService.show();
-    let url = `ViewSubscription?pageNumber=${this.page}&pageSize=${this.pageSize}`;
+    let url = `Subscription?pageNumber=${this.page}&pageSize=${this.pageSize}`;
     if (this.filterForm.searchText)
       url = url + `&searchText=${this.filterForm.searchText}`;
     this.webService.get(url).subscribe((response: any) => {
@@ -96,12 +98,13 @@ export class SubscriptionComponent implements OnInit {
 
   async openAddSubscriptionModal(template: TemplateRef<any>) {
     this.subscriptionFormDetails = {
-      subCategoryId: '',
-      languageId: ''
+      offerId: '',
+      typeId: ''
     };
     this.isEdit = false;
     this.typeList = await this.getTypeList();
     this.offerList = await this.getOfferList();
+    this.minDate = new Date();
     this.addEditSubscriptionModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
 
@@ -114,24 +117,24 @@ export class SubscriptionComponent implements OnInit {
   }
 
   addSubscription() {
-    if (!this.subscriptionFormDetails.subCategoryId) {
-      this.toastr.warning('Please select Sub Category', 'Warning');
+    if (!this.subscriptionFormDetails.typeId) {
+      this.toastr.warning('Please select type', 'Warning');
       return;
     }
-    if (!this.subscriptionFormDetails.languageId) {
-      this.toastr.warning('Please select language', 'Warning');
+    if (!this.subscriptionFormDetails.offerId) {
+      this.toastr.warning('Please select offer', 'Warning');
       return;
     }
 
-    if (!this.subscriptionFormDetails.name) {
+    if (!this.subscriptionFormDetails.typename) {
       this.toastr.warning('Please enter Subscription name', 'Warning');
       return;
     }
-    if (!this.subscriptionFormDetails.title) {
-      this.toastr.warning('Please enter Subscription title', 'Warning');
+    if (!this.subscriptionFormDetails.subcriptionFrom) {
+      this.toastr.warning('Please select Subscription form date', 'Warning');
       return;
     }
-    let url = `ViewSubscription`;
+    let url = `Subscription`;
     // this.spinnerService.show();
     this.webService.post(url, this.subscriptionFormDetails).subscribe((response: any) => {
       this.getSubscriptionList();
@@ -143,24 +146,24 @@ export class SubscriptionComponent implements OnInit {
   }
 
   updateSubscription() {
-    if (!this.subscriptionFormDetails.subCategoryId) {
-      this.toastr.warning('Please select Sub Category', 'Warning');
+    if (!this.subscriptionFormDetails.typeId) {
+      this.toastr.warning('Please select type', 'Warning');
       return;
     }
-    if (!this.subscriptionFormDetails.languageId) {
-      this.toastr.warning('Please select language', 'Warning');
+    if (!this.subscriptionFormDetails.offerId) {
+      this.toastr.warning('Please select offer', 'Warning');
       return;
     }
 
-    if (!this.subscriptionFormDetails.name) {
+    if (!this.subscriptionFormDetails.typename) {
       this.toastr.warning('Please enter Subscription name', 'Warning');
       return;
     }
-    if (!this.subscriptionFormDetails.title) {
-      this.toastr.warning('Please enter Subscription title', 'Warning');
+    if (!this.subscriptionFormDetails.subcriptionFrom) {
+      this.toastr.warning('Please select Subscription form date', 'Warning');
       return;
     }
-    let url = `ViewSubscription?id=${this.subscriptionFormDetails.id}`;
+    let url = `Subscription?subscriptionId=${this.subscriptionFormDetails.subscriptionId}`;
     // this.spinnerService.show();
     this.webService.put(url, this.subscriptionFormDetails).subscribe((response: any) => {
       this.getSubscriptionList();
@@ -172,10 +175,10 @@ export class SubscriptionComponent implements OnInit {
   }
 
   deleteSubscription(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete Subscription  ${obj.name}?`)
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete Subscription  ${obj.typename}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `ViewSubscription?viewSubscriptionId=${obj.viewSubscriptionId}`;
+          let url = `Subscription?subscriptionId=${obj.subscriptionId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
@@ -188,7 +191,7 @@ export class SubscriptionComponent implements OnInit {
             // }
             // } else {
             //   this.toastr.error('Your Session expired', 'Error');
-            //    this.router.navigate(['/login'], { queryParams: { return_url: `builders/${this.builderId}` } });
+            //    this.router.navigate(['/login'], { queryParams: { return_url: `builders / ${ this.builderId } ` } });
             // }
           }, (error) => {
             console.log('error', error);
