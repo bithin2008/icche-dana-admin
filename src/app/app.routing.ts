@@ -107,6 +107,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "type",
+        loadChildren: () =>
+          import("./views/type/type.module").then(
+            (m) => m.TypeModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
