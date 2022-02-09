@@ -44,6 +44,10 @@ export const navItems: INavData[] = [
     name: 'Offer',
     url: '/offer',
     icon: 'icon-drop'
+  }, {
+    name: 'Subscription',
+    url: '/subscription',
+    icon: 'icon-drop'
   },
   {
     name: 'Customer Review',

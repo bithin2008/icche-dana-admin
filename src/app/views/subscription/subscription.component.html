@@ -1,0 +1,301 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button
+                class="btn btn-primary mb-3 mt-3"
+                (click)="openAddSubscriptionModal(addEditSubscriptionModal)"
+            >
+                Add Subscription
+            </button>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i>
+                    Subscription
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Title</th>
+                                    <th>Sub title</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th width="150"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="subscriptionList?.length>0">
+                                    <tr *ngFor="let subscription of subscriptionList">
+                                        <td>{{subscription?.name}}</td>
+                                        <td>{{subscription?.title}}</td>
+                                        <td>{{subscription?.subTitle}}</td>
+                                        <td>
+                                            {{subscription?.createDate | date:'medium'}}
+                                        </td>
+                                        <td>
+                                            <span
+                                                *ngIf="subscription.isActive"
+                                                class="badge badge-success"
+                                            >
+                                                Active
+                                            </span>
+                                            <span
+                                                *ngIf="!subscription.isActive"
+                                                class="badge badge-danger"
+                                            >
+                                                Inactive
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="btn btn-dark btn-sm mr-2"
+                                                (click)="viewDetails(subscription)"
+                                            >
+                                                <i
+                                                    class="fa fa-eye"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-sm mr-2"
+                                                (click)="openEditSubscriptionModal(addEditSubscriptionModal,subscription)"
+                                            >
+                                                <i
+                                                    class="fa fa-edit"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="deleteSubscription(subscription)"
+                                            >
+                                                <i
+                                                    class="fa fa-trash"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="subscriptionList?.length==0">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="text-center"
+                                        >
+                                            Subscription not found
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination">
+                        <li class="page-subscription">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Prev
+                            </a>
+                        </li>
+                        <li class="page-subscription active">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                1
+                            </a>
+                        </li>
+                        <li class="page-subscription">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                2
+                            </a>
+                        </li>
+                        <li class="page-subscription">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                3
+                            </a>
+                        </li>
+                        <li class="page-subscription">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                4
+                            </a>
+                        </li>
+                        <li class="page-subscription">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #addEditSubscriptionModal>
+    <div class="modal-header">
+        <h4
+            class="modal-title"
+            id="modal-basic-title"
+        >
+            Subscription Details
+        </h4>
+        <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="addEditSubscriptionModalRef.close()"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select SubCategory:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="subscriptionFormDetails.subCategoryId"
+                    >
+                        <option value>Select subcategory</option>
+                        <option
+                            value="{{subcategory.subCategoryId}}"
+                            *ngFor="let subcategory of subCategoryList"
+                        >
+                            {{subcategory.subCategoryName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select Language:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="subscriptionFormDetails.languageId"
+                    >
+                        <option value>Select language</option>
+                        <option
+                            value="{{language.languageId}}"
+                            *ngFor="let language of languageList"
+                        >
+                            {{language.languageName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Subscription Name:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.name"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Subscription Title:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.title"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Subscription Subtitle:</label>
+                    <input
+                        type="text"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.subTitle"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="pname">Description:</label>
+                    <textarea
+                        class="form-control"
+                        name="subTitle"
+                        [(ngModel)]="subscriptionFormDetails.description"
+                    ></textarea>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="exampleCheck1"
+                        [(ngModel)]="subscriptionFormDetails.isActive"
+                    >
+                    <label
+                        class="form-check-label"
+                        for="exampleCheck1"
+                    >
+                        Is Active
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="!isEdit"
+            (click)="addSubscription()"
+        >
+            Add Subscription
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="isEdit"
+            (click)="updateSubscription()"
+        >
+            Update Subscription
+        </button>
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="addEditSubscriptionModalRef.close()"
+        >
+            Cancel
+        </button>
+
+    </div>
+</ng-template>

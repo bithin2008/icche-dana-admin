@@ -121,6 +121,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "subscription",
+        loadChildren: () =>
+          import("./views/subscription/subscription.module").then(
+            (m) => m.SubscriptionModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
