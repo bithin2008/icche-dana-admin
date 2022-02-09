@@ -1,0 +1,269 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button
+                class="btn btn-primary mb-3 mt-3"
+                (click)="openAddOfferModal(addEditOfferModal)"
+            >
+                Add Offer
+            </button>
+        </div>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i>
+                    Offer
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Offer Type</th>
+                                    <th>Days</th>
+                                    <th>Rate</th>
+                                    <th>Extend Days</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                    <th width="100"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="offerList.length>0">
+                                    <tr *ngFor="let offer of offerList">
+                                        <td>{{offer.name}}</td>
+                                        <td>{{offer.offerType}}</td>
+                                        <td>{{offer.days}}</td>
+                                        <td>{{offer.offerRate}}</td>
+                                        <td>{{offer.extendDays}}</td>
+                                        <td>{{offer.discription}}</td>
+                                        <td>{{offer.createDate | date:'medium'}}</td>
+                                        <td>
+                                            <button
+                                                offer="button"
+                                                class="btn btn-primary btn-sm mr-2"
+                                                (click)="openEditOfferModal(addEditOfferModal,offer)"
+                                            >
+                                                <i
+                                                    class="fa fa-edit"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                offer="button"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="deleteOffer(offer)"
+                                            >
+                                                <i
+                                                    class="fa fa-trash"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="offerList.length==0">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="text-center"
+                                        >
+                                            Offer not found
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Prev
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                1
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                2
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                3
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                4
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #addEditOfferModal>
+    <div class="modal-header">
+        <h4
+            class="modal-title"
+            id="modal-basic-title"
+        >
+            Offer Details
+        </h4>
+        <button
+            offer="button"
+            class="close"
+            aria-label="Close"
+            (click)="addEditOfferModalRef.close()"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select Type:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="offerFormDetails.typeId"
+                    >
+                        <option value>Select Type</option>
+                        <option
+                            value="{{type.typeId}}"
+                            *ngFor="let type of typeList"
+                        >
+                            {{type.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Select Offer Type:</label>
+                    <select
+                        class="form-control"
+                        id="exampleFormControlSelect1"
+                        [(ngModel)]="offerFormDetails.offerType"
+                    >
+                        <option value>Select Offer Type</option>
+                        <option value="Discount">Discount</option>
+                        <option value="Flat">Flat</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Offer Name:</label>
+                    <input
+                        offer="text"
+                        name="pname"
+                        [(ngModel)]="offerFormDetails.name"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Days:</label>
+                    <input
+                        offer="number"
+                        name="pname"
+                        [(ngModel)]="offerFormDetails.days"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Extend Days:</label>
+                    <input
+                        offer="number"
+                        name="pname"
+                        [(ngModel)]="offerFormDetails.extendDays"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pname">Offer Rate:</label>
+                    <input
+                        offer="number"
+                        name="pname"
+                        [(ngModel)]="offerFormDetails.offerRate"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="pname">Offer Description:</label>
+                    <textarea
+                        name="discription"
+                        [(ngModel)]="offerFormDetails.discription"
+                        class="form-control"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button
+            offer="button"
+            class="btn btn-primary"
+            *ngIf="!isEdit"
+            (click)="addOffer()"
+        >
+            Add Offer
+        </button>
+        <button
+            offer="button"
+            class="btn btn-primary"
+            *ngIf="isEdit"
+            (click)="updateOffer()"
+        >
+            Update Offer
+        </button>
+        <button
+            offer="button"
+            class="btn btn-danger"
+            (click)="addEditOfferModalRef.close()"
+        >
+            Cancel
+        </button>
+
+    </div>
+</ng-template>

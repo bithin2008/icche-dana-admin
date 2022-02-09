@@ -114,6 +114,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "offer",
+        loadChildren: () =>
+          import("./views/offer/offer.module").then(
+            (m) => m.OfferModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
