@@ -128,6 +128,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "subscription-details/:subscriptionid",
+        loadChildren: () =>
+          import("./views/subscription-details/subscription-details.module").then(
+            (m) => m.SubscriptionDetailsModule
+          ),
+      },
+      {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },

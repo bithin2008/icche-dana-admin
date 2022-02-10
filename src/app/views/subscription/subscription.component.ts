@@ -203,7 +203,7 @@ export class SubscriptionComponent implements OnInit {
 
 
   viewDetails(subscription) {
-    this.router.navigate(['/subscription-details/' + subscription.viewSubscriptionId]);
+    this.router.navigate(['/subscription-details/' + subscription.subscriptionId]);
   }
 
 }

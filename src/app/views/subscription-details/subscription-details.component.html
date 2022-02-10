@@ -1,0 +1,307 @@
+<div class="animated fadeIn  mt-3">
+    <div class="row">
+        <div class="col-lg-12  mt-3">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i>
+                    Item Details
+                </div>
+                <div class="card-body">
+                    <div class="col-md-12 text-right">
+                        <button
+                            class="btn btn-primary mb-3 mt-3"
+                            (click)="openAddSubscriptionDetailsModal(addEditSubscriptionDetailsModal)"
+                        >
+                            Add View Item
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Days</th>
+                                    <th>Rate</th>
+                                    <th>Offer Rate</th>
+                                    <th>Offer Range</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th width="120"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container>
+
+                                    <tr *ngFor="let subscription of subscriptionDetailList; let i = index">
+                                        <td>{{i+1}}</td>
+                                        <td>{{subscription?.noOfdayes}}</td>
+                                        <td>{{subscription?.rate}}</td>
+                                        <td>{{subscription?.offerRate}}</td>
+                                        <td>
+                                            {{subscription?.offerFrom| date:'mediumDate'}} to {{subscription?.offerTo| date:'mediumDate'}}
+                                        </td>
+                                        <td>
+                                            {{subscription?.createDate | date:'medium'}}
+                                        </td>
+                                        <td>
+                                            <span
+                                                *ngIf="subscription.isActive"
+                                                class="badge badge-success"
+                                            >
+                                                Active
+                                            </span>
+                                            <span
+                                                *ngIf="!subscription.isActive"
+                                                class="badge badge-danger"
+                                            >
+                                                Inactive
+                                            </span>
+                                        </td>
+                                        <td>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-sm mr-2"
+                                                (click)="openEditSubscriptionDetailsModal(addEditSubscriptionDetailsModal,subscription)"
+                                            >
+                                                <i
+                                                    class="fa fa-edit"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                (click)="deleteSubscriptionDetails(subscription)"
+                                            >
+                                                <i
+                                                    class="fa fa-trash"
+                                                    aria-hidden="true"
+                                                ></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-container *ngIf="subscriptionDetailList?.length==0">
+                                    <tr>
+                                        <td
+                                            colspan="6"
+                                            class="text-center"
+                                        >
+                                            Subscription detail not found
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Prev
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                1
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                2
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                3
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                4
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="#"
+                            >
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #addEditSubscriptionDetailsModal>
+    <div class="modal-header">
+        <h4
+            class="modal-title"
+            id="modal-basic-title"
+        >
+            Subscription Details
+        </h4>
+        <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="addEditSubscriptionDetailsModalRef.close()"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">No Of Days:</label>
+                    <input
+                        type="number"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.noOfdayes"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Rate:</label>
+                    <input
+                        type="number"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.rate"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="pname">Offer Rate:</label>
+                    <input
+                        type="number"
+                        name="pname"
+                        [(ngModel)]="subscriptionFormDetails.offerRate"
+                        class="form-control"
+                    >
+                </div>
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label for="pname">Offer From:</label>
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            class="form-control"
+                            #startDate="bsDatepicker"
+                            [minDate]="minDate"
+                            bsDatepicker
+                            [bsConfig]="{ containerClass: 'theme-dark-blue',showTodayButton: false, todayPosition: 'center',showClearButton: false, clearPosition: 'right',isAnimated: true,adaptivePosition: true,dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                            [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="subscriptionFormDetails.offerFrom"
+                        >
+                        <span
+                            class=" input-group-prepend"
+                            (click)="startDate.toggle()"
+                            [attr.aria-expanded]="startDate.isOpen"
+                        >
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label for="pname">Offer To:</label>
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            class="form-control"
+                            #offerTo="bsDatepicker"
+                            [minDate]="minDate"
+                            bsDatepicker
+                            [bsConfig]="{ containerClass: 'theme-dark-blue',showTodayButton: false, todayPosition: 'center',showClearButton: false, clearPosition: 'right',isAnimated: true,adaptivePosition: true,dateInputFormat: 'DD-MM-YYYY',  returnFocusToInput: true }"
+                            [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="subscriptionFormDetails.offerTo"
+                        >
+                        <span
+                            class=" input-group-prepend"
+                            (click)="offerTo.toggle()"
+                            [attr.aria-expanded]="offerTo.isOpen"
+                        >
+                            <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group form-check">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="exampleCheck1"
+                        [(ngModel)]="subscriptionFormDetails.isActive"
+                    >
+                    <label
+                        class="form-check-label"
+                        for="exampleCheck1"
+                    >
+                        Is Active
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="!isEdit"
+            (click)="addSubscriptionDetails()"
+        >
+            Add Subscription
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary"
+            *ngIf="isEdit"
+            (click)="updateSubscriptionDetails()"
+        >
+            Update Subscription
+        </button>
+        <button
+            type="button"
+            class="btn btn-danger"
+            (click)="addEditSubscriptionDetailsModalRef.close()"
+        >
+            Cancel
+        </button>
+
+    </div>
+</ng-template>
