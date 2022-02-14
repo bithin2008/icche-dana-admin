@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
+
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
@@ -22,6 +23,12 @@ export class ItemDetailsComponent implements OnInit {
   public addEditItemDetailsModalRef: any;
   public addEditItemMaterialModalRef: any;
   public isEdit: boolean = false;
+  public isBannerAdded: boolean = false;
+  public isPosterAdded: boolean = false;
+  public formDetails: any = {};
+  public imageFile: any;
+  public imageSelected: any;
+  public active = 1;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -293,5 +300,87 @@ export class ItemDetailsComponent implements OnInit {
         }
       })
       .catch((error) => { });
+  }
+
+  uploadItem(files: FileList, type: any) {
+    if (type == 'banner') {
+      this.formDetails = {
+        banner: {}
+      };
+    }
+    if (type == 'poster') {
+      this.formDetails = {
+        poster: {}
+      };
+    }
+    let validation = this.validatePhotoUpload(files.item(0).name);
+    if (validation) {
+      this.imageFile = files.item(0);
+      this.getBase64(files.item(0), type);
+      // this.formDetails.logo.hasImg = true;
+    } else {
+      this.toastr.error("Please upload only JPG, PNG, GIF format", "Error");
+    }
+  }
+
+  getBase64(file, type) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      // console.log(reader.result);
+      if (type == 'banner') {
+        this.uploadBanner()
+      }
+      if (type == 'poster') {
+        this.uploadPoster()
+      }
+    };
+    reader.onerror = function (error) {
+      console.log("Error: ", error);
+    };
+  }
+
+  validatePhotoUpload(fileName) {
+    var allowed_extensions = new Array("jpg", "jpeg", "png", "gif");
+    var file_extension = fileName.split(".").pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+    for (var i = 0; i <= allowed_extensions.length; i++) {
+      if (allowed_extensions[i] == file_extension) {
+        return true; // valid file extension
+      }
+    }
+    return false;
+  }
+
+  uploadBanner() {
+    let url = `Banner`;
+    var formData = new FormData();
+    formData.append('image', this.imageFile);
+    formData.append('viewitemMaterialId', this.itemList.viewitemMaterials[0].viewitemMaterialId);
+    this.webService.fileUpload(url, formData).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      //  this.addEditModalRef.close();
+      this.formDetails.banner = environment.API_ENDPOINT + response.bannerUrl.replaceAll('\\', '/');
+      this.isBannerAdded = true;
+      this.toastr.success('Banner uploaded', 'Success');
+    }, (error) => {
+      console.log('error ts: ', error);
+    });
+  }
+
+
+  uploadPoster() {
+    let url = `Poster`;
+    var formData = new FormData();
+    formData.append('image', this.imageFile);
+    formData.append('viewitemMaterialId', this.itemList.viewitemMaterials[0].viewitemMaterialId);
+    this.webService.fileUpload(url, formData).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      //  this.addEditModalRef.close();
+      this.formDetails.poster = environment.API_ENDPOINT + response.posterURL.replaceAll('\\', '/');
+      this.isPosterAdded = true;
+      this.toastr.success('Poster uploaded', 'Success');
+    }, (error) => {
+      console.log('error ts: ', error);
+    });
   }
 }

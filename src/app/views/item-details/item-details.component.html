@@ -452,7 +452,7 @@
             class="modal-title"
             id="modal-basic-title"
         >
-            Item Details
+            Item Material
         </h4>
         <button
             type="button"
@@ -464,74 +464,200 @@
         </button>
     </div>
     <div class="modal-body">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="pname">Source Link:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormMaterial.sourceLink"
-                        class="form-control"
-                    >
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="pname">Minutes:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormMaterial.minutes"
-                        class="form-control"
-                    >
-                </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="pname">Episode Number:</label>
-                    <input
-                        type="text"
-                        name="pname"
-                        [(ngModel)]="itemFormMaterial.episodeNumber"
-                        class="form-control"
+        <ul
+            ngbNav
+            #nav="ngbNav"
+            [(activeId)]="active"
+            class="nav-tabs"
+        >
+            <li [ngbNavItem]="1">
+                <a ngbNavLink>Details</a>
+                <ng-template ngbNavContent>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="pname">Source Link:</label>
+                                <input
+                                    type="text"
+                                    name="pname"
+                                    [(ngModel)]="itemFormMaterial.sourceLink"
+                                    class="form-control"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pname">Minutes:</label>
+                                <input
+                                    type="text"
+                                    name="pname"
+                                    [(ngModel)]="itemFormMaterial.minutes"
+                                    class="form-control"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pname">Episode Number:</label>
+                                <input
+                                    type="text"
+                                    name="pname"
+                                    [(ngModel)]="itemFormMaterial.episodeNumber"
+                                    class="form-control"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="exampleCheck1"
+                                    [(ngModel)]="itemFormMaterial.isActive"
+                                >
+                                <label
+                                    class="form-check-label"
+                                    for="exampleCheck1"
+                                >
+                                    Is Active
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="isExternal"
+                                    [(ngModel)]="itemFormMaterial.isExternal"
+                                >
+                                <label
+                                    class="form-check-label"
+                                    for="isExternal"
+                                >
+                                    Is External
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+                <a ngbNavLink>Banner</a>
+                <ng-template ngbNavContent>
+                    <div
+                        class="thumb-img"
+                        *ngIf=" (formDetails?.banner | json) != '{}' && isBannerAdded"
+                        [ngStyle]="{'background-image': 'url(&quot;'+ formDetails?.banner +'&quot;'}"
                     >
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group form-check">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="exampleCheck1"
-                        [(ngModel)]="itemFormMaterial.isActive"
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary logo-upload-btn"
+                        >
+                            <i
+                                class="fa fa-upload"
+                                style="font-size:15px;float: right;"
+                            ></i>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                (change)="uploadItem($event.target.files,'banner')"
+                            >
+                        </button>
+                    </div>
+                    <div
+                        class="thumb-img"
+                        *ngIf="!isBannerAdded"
+                        [ngStyle]="{'background-image': 'url(&quot;assets/images/no-image.jpg&quot;)'}"
                     >
-                    <label
-                        class="form-check-label"
-                        for="exampleCheck1"
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary logo-upload-btn"
+                        >
+                            <i
+                                class="fa fa-upload"
+                                style="font-size:12px;float: right;"
+                            ></i>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                #uploadInput
+                                (change)="uploadItem($event.target.files,'banner')"
+                            >
+                        </button>
+                    </div>
+
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="3">
+                <a ngbNavLink>Poster</a>
+                <ng-template ngbNavContent>
+                    <div
+                        class="thumb-img"
+                        *ngIf=" (formDetails?.poster | json) != '{}' && isPosterAdded"
+                        [ngStyle]="{'background-image': 'url(&quot;'+ formDetails?.poster +'&quot;'}"
                     >
-                        Is Active
-                    </label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group form-check">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        id="isExternal"
-                        [(ngModel)]="itemFormMaterial.isExternal"
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary logo-upload-btn"
+                        >
+                            <i
+                                class="fa fa-upload"
+                                style="font-size:15px;float: right;"
+                            ></i>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                (change)="uploadItem($event.target.files,'poster')"
+                            >
+                        </button>
+                    </div>
+                    <div
+                        class="thumb-img"
+                        *ngIf="!isPosterAdded"
+                        [ngStyle]="{'background-image': 'url(&quot;assets/images/no-image.jpg&quot;)'}"
                     >
-                    <label
-                        class="form-check-label"
-                        for="isExternal"
-                    >
-                        Is External
-                    </label>
-                </div>
-            </div>
-        </div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-primary logo-upload-btn"
+                        >
+                            <i
+                                class="fa fa-upload"
+                                style="font-size:12px;float: right;"
+                            ></i>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                #uploadInput
+                                (change)="uploadItem($event.target.files,'poster')"
+                            >
+                        </button>
+                    </div>
+                </ng-template>
+            </li>
+            <li [ngbNavItem]="4">
+                <a ngbNavLink>Trailer</a>
+                <ng-template ngbNavContent>
+                    <p>
+                        Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam. Nulla facilisi.
+                  Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu, congue et odio.
+                  Duis pharetra et nisl at faucibus. Quisque luctus pulvinar arcu, et molestie lectus ultrices et. Sed diam urna,
+                  egestas ut ipsum vel, volutpat volutpat neque. Praesent fringilla tortor arcu. Vivamus faucibus nisl enim, nec
+                  tristique ipsum euismod facilisis. Morbi ut bibendum est, eu tincidunt odio. Orci varius natoque penatibus et
+                  magnis dis parturient montes, nascetur ridiculus mus. Mauris aliquet odio ac lorem aliquet ultricies in eget
+                  neque. Phasellus nec tortor vel tellus pulvinar feugiat.
+                    </p>
+                </ng-template>
+            </li>
+        </ul>
+
+        <div
+            [ngbNavOutlet]="nav"
+            class="mt-2"
+        ></div>
+
     </div>
     <div class="modal-footer">
         <button
