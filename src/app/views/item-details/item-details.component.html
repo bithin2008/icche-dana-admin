@@ -454,14 +454,6 @@
         >
             Item Material
         </h4>
-        <button
-            type="button"
-            class="close"
-            aria-label="Close"
-            (click)="addEditItemMaterialModalRef.close()"
-        >
-            <span aria-hidden="true">&times;</span>
-        </button>
     </div>
     <div class="modal-body">
 
@@ -542,9 +534,38 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer pb-0">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            *ngIf="!isEdit"
+                            (click)="addItemMaterial()"
+                        >
+                            Add View Item
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            *ngIf="isEdit"
+                            (click)="updateItemMaterial()"
+                        >
+                            Update View Item
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            (click)="addEditItemMaterialModalRef.close()"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
                 </ng-template>
             </li>
-            <li [ngbNavItem]="2">
+            <li
+                [ngbNavItem]="2"
+                [disabled]="disableBanner"
+            >
                 <a ngbNavLink>Banner</a>
                 <ng-template ngbNavContent>
                     <div
@@ -591,7 +612,10 @@
 
                 </ng-template>
             </li>
-            <li [ngbNavItem]="3">
+            <li
+                [ngbNavItem]="3"
+                [disabled]="disablePoster"
+            >
                 <a ngbNavLink>Poster</a>
                 <ng-template ngbNavContent>
                     <div
@@ -637,18 +661,39 @@
                     </div>
                 </ng-template>
             </li>
-            <li [ngbNavItem]="4">
+            <li
+                [ngbNavItem]="4"
+                [disabled]="disableTrailer"
+            >
                 <a ngbNavLink>Trailer</a>
                 <ng-template ngbNavContent>
-                    <p>
-                        Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam. Nulla facilisi.
-                  Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu, congue et odio.
-                  Duis pharetra et nisl at faucibus. Quisque luctus pulvinar arcu, et molestie lectus ultrices et. Sed diam urna,
-                  egestas ut ipsum vel, volutpat volutpat neque. Praesent fringilla tortor arcu. Vivamus faucibus nisl enim, nec
-                  tristique ipsum euismod facilisis. Morbi ut bibendum est, eu tincidunt odio. Orci varius natoque penatibus et
-                  magnis dis parturient montes, nascetur ridiculus mus. Mauris aliquet odio ac lorem aliquet ultricies in eget
-                  neque. Phasellus nec tortor vel tellus pulvinar feugiat.
-                    </p>
+                    <div class="form-group row">
+                        <label
+                            for="text-input"
+                            class="col-md-2 col-form-label"
+                        >
+                            Trailor Url
+                        </label>
+                        <div class="col-md-9">
+                            <input
+                                type="text"
+                                id="text-input"
+                                name="text-input"
+                                placeholder="Enter trailor url"
+                                class="form-control"
+                            >
+                        </div>
+                    </div>
+                    <div class="modal-footer pb-0">
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            (click)="addEditItemMaterialModalRef.close()"
+                        >
+                            Close
+                        </button>
+
+                    </div>
                 </ng-template>
             </li>
         </ul>
@@ -659,30 +704,5 @@
         ></div>
 
     </div>
-    <div class="modal-footer">
-        <button
-            type="button"
-            class="btn btn-primary"
-            *ngIf="!isEdit"
-            (click)="addItemMaterial()"
-        >
-            Add View Item
-        </button>
-        <button
-            type="button"
-            class="btn btn-primary"
-            *ngIf="isEdit"
-            (click)="updateItemMaterial()"
-        >
-            Update View Item
-        </button>
-        <button
-            type="button"
-            class="btn btn-danger"
-            (click)="addEditItemMaterialModalRef.close()"
-        >
-            Cancel
-        </button>
 
-    </div>
 </ng-template>

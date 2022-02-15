@@ -29,6 +29,10 @@ export class ItemDetailsComponent implements OnInit {
   public imageFile: any;
   public imageSelected: any;
   public active = 1;
+  public disableBanner: boolean = true;
+  public disablePoster: boolean = true;
+  public disableTrailer: boolean = true;
+  public currentViewitemMaterialId: any;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -102,7 +106,11 @@ export class ItemDetailsComponent implements OnInit {
       genreId: '',
       isMultipleType: false
     };
+    this.active = 1;
     this.isEdit = false;
+    this.disableBanner = true;
+    this.disablePoster = true;
+    this.disableTrailer = true;
     // this.genreList = await this.getGenreList();
     this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
@@ -115,8 +123,22 @@ export class ItemDetailsComponent implements OnInit {
   }
 
   async openEditItemMaterialModal(template: TemplateRef<any>, obj) {
+    this.active = 1;
     this.itemFormMaterial = { ...obj };
+    this.currentViewitemMaterialId = obj.viewitemMaterialId;
+    if (this.itemFormMaterial.banners) {
+      this.formDetails.banner = environment.API_ENDPOINT + this.itemFormMaterial.banners.bannerUrl.replaceAll('\\', '/');
+      this.isBannerAdded = true;
+    }
+    if (this.itemFormMaterial.posters) {
+      this.formDetails.poster = environment.API_ENDPOINT + this.itemFormMaterial.posters.posterURL.replaceAll('\\', '/');
+      this.isPosterAdded = true;
+    }
+
     this.isEdit = true;
+    this.disableBanner = false;
+    this.disablePoster = false;
+    this.disableTrailer = false;
     this.genreList = await this.getGenreList();
     this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
@@ -179,8 +201,13 @@ export class ItemDetailsComponent implements OnInit {
     // this.spinnerService.show();
     this.webService.post(url, this.itemFormMaterial).subscribe((response: any) => {
       this.getItemDetails();
+      this.currentViewitemMaterialId = response.viewitemMaterialId;
       this.toastr.success('Item material added successfully', 'Success');
-      this.addEditItemMaterialModalRef.close();
+      setTimeout(() => {
+        this.disableBanner = false;
+        this.active = 2;
+      }, 1000);
+      // this.addEditItemMaterialModalRef.close();
     }, (error) => {
       console.log('error', error);
     });
@@ -304,14 +331,10 @@ export class ItemDetailsComponent implements OnInit {
 
   uploadItem(files: FileList, type: any) {
     if (type == 'banner') {
-      this.formDetails = {
-        banner: {}
-      };
+      this.formDetails.banner = {};
     }
     if (type == 'poster') {
-      this.formDetails = {
-        poster: {}
-      };
+      this.formDetails.poster = {};
     }
     let validation = this.validatePhotoUpload(files.item(0).name);
     if (validation) {
@@ -355,12 +378,16 @@ export class ItemDetailsComponent implements OnInit {
     let url = `Banner`;
     var formData = new FormData();
     formData.append('image', this.imageFile);
-    formData.append('viewitemMaterialId', this.itemList.viewitemMaterials[0].viewitemMaterialId);
+    formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
     this.webService.fileUpload(url, formData).subscribe((response: any) => {
       //  this.spinnerService.hide();
       //  this.addEditModalRef.close();
       this.formDetails.banner = environment.API_ENDPOINT + response.bannerUrl.replaceAll('\\', '/');
       this.isBannerAdded = true;
+      setTimeout(() => {
+        this.disablePoster = false;
+        this.active = 3;
+      }, 1000);
       this.toastr.success('Banner uploaded', 'Success');
     }, (error) => {
       console.log('error ts: ', error);
@@ -372,12 +399,17 @@ export class ItemDetailsComponent implements OnInit {
     let url = `Poster`;
     var formData = new FormData();
     formData.append('image', this.imageFile);
-    formData.append('viewitemMaterialId', this.itemList.viewitemMaterials[0].viewitemMaterialId);
+    formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
     this.webService.fileUpload(url, formData).subscribe((response: any) => {
       //  this.spinnerService.hide();
       //  this.addEditModalRef.close();
       this.formDetails.poster = environment.API_ENDPOINT + response.posterURL.replaceAll('\\', '/');
       this.isPosterAdded = true;
+      setTimeout(() => {
+        this.disableTrailer = false;
+        this.active = 4;
+      }, 1000);
+
       this.toastr.success('Poster uploaded', 'Success');
     }, (error) => {
       console.log('error ts: ', error);
