@@ -27,6 +27,7 @@ export class ItemDetailsComponent implements OnInit {
   public isPosterAdded: boolean = false;
   public formDetails: any = {};
   public imageFile: any;
+  public videoFile: any;
   public imageSelected: any;
   public active = 1;
   public disableBanner: boolean = true;
@@ -133,6 +134,10 @@ export class ItemDetailsComponent implements OnInit {
     if (this.itemFormMaterial.posters) {
       this.formDetails.poster = environment.API_ENDPOINT + this.itemFormMaterial.posters.posterURL.replaceAll('\\', '/');
       this.isPosterAdded = true;
+    }
+
+    if (this.itemFormMaterial.trailers) {
+      this.formDetails.trailor = environment.API_ENDPOINT + this.itemFormMaterial.trailers.trailerUrl.replaceAll('\\', '/');
     }
 
     this.isEdit = true;
@@ -346,6 +351,17 @@ export class ItemDetailsComponent implements OnInit {
     }
   }
 
+  uploadVideo(files: FileList) {
+    let validation = this.validateVideoUpload(files.item(0).name);
+    if (validation) {
+      this.videoFile = files.item(0);
+      this.uploadTrailor();
+      // this.formDetails.logo.hasImg = true;
+    } else {
+      this.toastr.error("Please upload only JPG, PNG, GIF format", "Error");
+    }
+  }
+
   getBase64(file, type) {
     var reader = new FileReader();
     reader.readAsDataURL(file);
@@ -365,6 +381,17 @@ export class ItemDetailsComponent implements OnInit {
 
   validatePhotoUpload(fileName) {
     var allowed_extensions = new Array("jpg", "jpeg", "png", "gif");
+    var file_extension = fileName.split(".").pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
+    for (var i = 0; i <= allowed_extensions.length; i++) {
+      if (allowed_extensions[i] == file_extension) {
+        return true; // valid file extension
+      }
+    }
+    return false;
+  }
+
+  validateVideoUpload(fileName) {
+    var allowed_extensions = new Array("mp4", "mpeg", "mkv", "avi");
     var file_extension = fileName.split(".").pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
     for (var i = 0; i <= allowed_extensions.length; i++) {
       if (allowed_extensions[i] == file_extension) {
@@ -411,6 +438,22 @@ export class ItemDetailsComponent implements OnInit {
       }, 1000);
 
       this.toastr.success('Poster uploaded', 'Success');
+    }, (error) => {
+      console.log('error ts: ', error);
+    });
+  }
+
+  uploadTrailor() {
+    let url = `Trailer`;
+    var formData = new FormData();
+    formData.append('video', this.videoFile);
+    formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
+    this.webService.fileUpload(url, formData).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      //  
+      this.formDetails.trailor = environment.API_ENDPOINT + response.trailerUrl.replaceAll('\\', '/');
+      this.addEditItemMaterialModalRef.close();
+      this.toastr.success('Trailer uploaded', 'Success');
     }, (error) => {
       console.log('error ts: ', error);
     });

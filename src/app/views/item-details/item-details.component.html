@@ -666,25 +666,45 @@
                 [disabled]="disableTrailer"
             >
                 <a ngbNavLink>Trailer</a>
+
                 <ng-template ngbNavContent>
-                    <div class="form-group row">
-                        <label
-                            for="text-input"
-                            class="col-md-2 col-form-label"
+                    <div class="text-center mb-4">
+                        <button
+                            type="button"
+                            class="btn  btn-primary video-upload-btn"
                         >
-                            Trailor Url
-                        </label>
-                        <div class="col-md-9">
+                            Upload Video
                             <input
-                                type="text"
-                                id="text-input"
-                                name="text-input"
-                                placeholder="Enter trailor url"
-                                class="form-control"
+                                type="file"
+                                accept="video/*"
+                                #uploadInput
+                                (change)="uploadVideo($event.target.files)"
                             >
-                        </div>
+                        </button>
                     </div>
-                    <div class="modal-footer pb-0">
+                    <div
+                        class="player-wrapper"
+                        *ngIf="formDetails.trailor"
+                    >
+                        <vg-player>
+                            <video
+                                [vgMedia]="media"
+                                #media
+                                id="singleVideo"
+                                preload="auto"
+                                controls
+                            >
+                                <source
+                                    src="{{formDetails.trailor}}"
+                                    type="video/mp4"
+                                >
+                            </video>
+                        </vg-player>
+                    </div>
+                    <div
+                        class="modal-footer text-right pb-0"
+                        *ngIf="formDetails.trailor"
+                    >
                         <button
                             type="button"
                             class="btn btn-danger"
@@ -694,6 +714,7 @@
                         </button>
 
                     </div>
+
                 </ng-template>
             </li>
         </ul>

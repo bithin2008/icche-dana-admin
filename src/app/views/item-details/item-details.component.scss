@@ -6,7 +6,13 @@
     right: 10px;
 }
 
-.logo-upload-btn input[type="file"] {
+.video-upload-btn {
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.logo-upload-btn input[type="file"],.video-upload-btn  input[type="file"]{
     font-size: 100px;
     position: absolute;
     left: 0;
@@ -24,4 +30,14 @@
     background-position: center;
     border: 2px solid #ccc;
     position: relative;
+}
+
+.player-wrapper {
+    max-width: 100%;
+    margin: auto;
+    height: 350px;
+
+    video {
+        width: 100%;
+    }
 }
