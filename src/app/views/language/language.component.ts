@@ -125,7 +125,7 @@ export class LanguageComponent implements OnInit {
     this.confirmationDialogService.confirm('Delete', `Do you want to delete language  ${obj.languageName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `Language?id=${obj.id}`;
+          let url = `Language?languageId=${obj.languageId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();

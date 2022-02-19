@@ -116,10 +116,10 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteCategory(obj) {
-    this.confirmationDialogService.confirm('Delete', `Do you want to delete user  ${obj.categoryName}?`)
+    this.confirmationDialogService.confirm('Delete', `Do you want to delete category  ${obj.categoryName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `users?id=${obj.id}`;
+          let url = `Category?categoryId=${obj.categoryId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();

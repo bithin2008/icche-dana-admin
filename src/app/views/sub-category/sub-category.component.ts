@@ -150,7 +150,7 @@ export class SubCategoryComponent implements OnInit {
     this.confirmationDialogService.confirm('Delete', `Do you want to delete subcategory  ${obj.subCategoryName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `SubCategory?id=${obj.id}`;
+          let url = `SubCategory?subCategoryId=${obj.subCategoryId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();

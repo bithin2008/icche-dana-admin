@@ -121,7 +121,7 @@ export class GenreComponent implements OnInit {
     this.confirmationDialogService.confirm('Delete', `Do you want to delete genre  ${obj.genreName}?`)
       .then((confirmed) => {
         if (confirmed) {
-          let url = `Genre?id=${obj.id}`;
+          let url = `Genre?genreId=${obj.genreId}&isActiveOrDeletes=true&isActiveOrDelete=Delete`;
           // this.spinnerService.show();
           this.webService.delete(url).subscribe((response: any) => {
             // this.spinnerService.hide();
