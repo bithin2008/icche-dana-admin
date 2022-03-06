@@ -1,0 +1,33 @@
+.logo-upload-btn {
+    cursor: pointer;
+    overflow: hidden;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.video-upload-btn {
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.logo-upload-btn input[type="file"],.video-upload-btn  input[type="file"]{
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.thumb-img {
+    background: #e9e9e9;
+    min-height: 255px;
+    width: 270px;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #ccc;
+    position: relative;
+}

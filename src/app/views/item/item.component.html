@@ -252,7 +252,7 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group form-check">
                     <input
                         type="checkbox"
@@ -268,6 +268,52 @@
                     </label>
                 </div>
             </div>
+
+            <div class="col-md-12">
+                <h5 class="text-center">Poster</h5>
+                <div
+                    class="thumb-img"
+                    *ngIf=" (itemFormDetails?.poster | json) != '{}' && isPosterAdded"
+                    [ngStyle]="{'background-image': 'url(&quot;'+ itemFormDetails?.poster +'&quot;'}"
+                >
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary logo-upload-btn"
+                    >
+                        <i
+                            class="fa fa-upload"
+                            style="font-size:15px;float: right;"
+                        ></i>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            (change)="uploadItem($event.target.files,'poster')"
+                        >
+                    </button>
+                </div>
+                <div
+                    class="thumb-img"
+                    *ngIf="!isPosterAdded"
+                    [ngStyle]="{'background-image': 'url(&quot;assets/images/no-image.jpg&quot;)'}"
+                >
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary logo-upload-btn"
+                    >
+                        <i
+                            class="fa fa-upload"
+                            style="font-size:12px;float: right;"
+                        ></i>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            #uploadInput
+                            (change)="uploadItem($event.target.files,'poster')"
+                        >
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
     <div class="modal-footer">
