@@ -533,45 +533,6 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <hr>
-                            <div class="container">
-                                <form
-                                    class="box has-advanced-upload"
-                                    method="post"
-                                    action
-                                    enctype="multipart/form-data"
-                                >
-                                    <div class="box__input">
-                                        <input
-                                            class="box__file"
-                                            type="file"
-                                            accept="video/*"
-                                            #uploadMainVideoInput
-                                            (change)="uploadVideo($event.target.files,'main')"
-                                        >
-                                        <label for="file">
-                                            <strong>Choose a file</strong>
-                                            <span class="box__dragndrop">or drag it here</span>
-                                            .
-                                        </label>
-                                        <button
-                                            class="box__button"
-                                            type="submit"
-                                        >
-                                            Upload
-                                        </button>
-                                    </div>
-                                    <div class="box__uploading">Uploading…</div>
-                                    <div class="box__success">Done!</div>
-                                    <div class="box__error">
-                                        Error!
-                                        <span></span>
-                                        .
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer pb-0">
                         <button
@@ -740,9 +701,101 @@
                             </video>
                         </vg-player>
                     </div>
+                </ng-template>
+            </li>
+            <li
+                [ngbNavItem]="5"
+                [disabled]="disableMainVideo"
+            >
+                <a ngbNavLink>Video</a>
+
+                <ng-template ngbNavContent>
+                    <div
+                        class="container"
+                        *ngIf="!formDetails.mainVideoURL"
+                    >
+                        <form
+                            class="box has-advanced-upload"
+                            method="post"
+                            action
+                            enctype="multipart/form-data"
+                        >
+                            <div class="box__input">
+                                <input
+                                    class="box__file"
+                                    type="file"
+                                    accept="video/*"
+                                    #uploadMainVideoInput
+                                    (change)="uploadVideo($event.target.files,'main')"
+                                >
+                                <label for="file">
+                                    <strong>Choose a file</strong>
+                                    <span class="box__dragndrop">or drag it here</span>
+                                    .
+                                </label>
+                                <button
+                                    class="box__button"
+                                    type="submit"
+                                >
+                                    Upload
+                                </button>
+                            </div>
+                            <div class="box__uploading">Uploading…</div>
+                            <div class="box__success">Done!</div>
+                            <div class="box__error">
+                                Error!
+                                <span></span>
+                                .
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <div
+                            class="progress form-group"
+                            *ngIf="progress > 0"
+                        >
+                            <div
+                                class="progress-bar progress-bar-striped bg-success"
+                                role="progressbar"
+                                [style.width.%]="progress"
+                            >
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="text-center mb-4"
+                        *ngIf="formDetails.mainVideoURL"
+                    >
+                        <button
+                            type="button"
+                            class="btn  btn-primary video-upload-btn"
+                        >
+                            Upload Video
+                            <input
+                                type="file"
+                                accept="video/*"
+                                #uploadInput
+                                (change)="uploadVideo($event.target.files,'main')"
+                            >
+                        </button>
+                    </div>
+                    <vg-player *ngIf="formDetails.mainVideoURL">
+                        <video
+                            [vgMedia]="media"
+                            #media
+                            id="singleVideo"
+                            preload="auto"
+                            controls
+                        >
+                            <source
+                                src="{{formDetails.mainVideoURL}}"
+                                type="video/mp4"
+                            >
+                        </video>
+                    </vg-player>
                     <div
                         class="modal-footer text-right pb-0"
-                        *ngIf="formDetails.trailor"
+                        *ngIf="formDetails.mainVideoURL"
                     >
                         <button
                             type="button"

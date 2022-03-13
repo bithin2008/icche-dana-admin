@@ -80,6 +80,15 @@ export class WebService {
                 catchError(this.handleError)
             );
     }
+    videoUpload(URL: any, data: any): Observable<any> {
+        return this._http.post(
+            environment.API_ENDPOINT + URL, data, {
+            reportProgress: true,
+            observe: 'events'
+        }).pipe(
+            catchError(this.handleError)
+        );
+    }
     fileUploadPut(URL: any, data: any): Observable<any> {
         return this._http.put(
             environment.API_ENDPOINT + URL, data, this.getFileHeader()

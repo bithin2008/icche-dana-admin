@@ -6,7 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { ConfirmationDialogService } from '../confirmation-dialog/confirmation-dialog.service';
-
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 @Component({
   selector: 'app-item-details',
   templateUrl: './item-details.component.html',
@@ -33,7 +33,9 @@ export class ItemDetailsComponent implements OnInit {
   public disableBanner: boolean = true;
   public disablePoster: boolean = true;
   public disableTrailer: boolean = true;
+  public disableMainVideo: boolean = true;
   public currentViewitemMaterialId: any;
+  public progress: number = 0;
   page: number = 1;
   pageSize: number = 20;
   filterForm: any = {
@@ -112,6 +114,7 @@ export class ItemDetailsComponent implements OnInit {
     this.disableBanner = true;
     this.disablePoster = true;
     this.disableTrailer = true;
+    this.disableMainVideo = true;
     // this.genreList = await this.getGenreList();
     this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
@@ -140,10 +143,15 @@ export class ItemDetailsComponent implements OnInit {
       this.formDetails.trailor = environment.API_ENDPOINT + this.itemFormMaterial.trailers.trailerUrl.replaceAll('\\', '/');
     }
 
+    if (this.itemFormMaterial.mainVideoURL) {
+      this.formDetails.mainVideoURL = environment.API_ENDPOINT + this.itemFormMaterial.mainVideoURL.replaceAll('\\', '/');
+    }
+
     this.isEdit = true;
     this.disableBanner = false;
     this.disablePoster = false;
     this.disableTrailer = false;
+    this.disableMainVideo = false;
     this.genreList = await this.getGenreList();
     this.addEditItemMaterialModalRef = this.modalService.open(template, { size: 'lg', centered: true, backdrop: 'static' });
   }
@@ -396,7 +404,7 @@ export class ItemDetailsComponent implements OnInit {
   }
 
   validateVideoUpload(fileName) {
-    var allowed_extensions = new Array("mp4", "mpeg", "mkv", "avi");
+    var allowed_extensions = new Array("mp4", "mpeg", "avi");
     var file_extension = fileName.split(".").pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
     for (var i = 0; i <= allowed_extensions.length; i++) {
       if (allowed_extensions[i] == file_extension) {
@@ -409,7 +417,7 @@ export class ItemDetailsComponent implements OnInit {
   uploadBanner() {
     let url = `Banner`;
     var formData = new FormData();
-    formData.append('image', this.imageFile);
+    formData.append('image', this.imageFile, this.imageFile.name.replace(/ /g, "_"));
     formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
     this.webService.fileUpload(url, formData).subscribe((response: any) => {
       //  this.spinnerService.hide();
@@ -430,7 +438,7 @@ export class ItemDetailsComponent implements OnInit {
   uploadPoster() {
     let url = `Poster`;
     var formData = new FormData();
-    formData.append('image', this.imageFile);
+    formData.append('image', this.imageFile, this.imageFile.name.replace(/ /g, "_"));
     formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
     this.webService.fileUpload(url, formData).subscribe((response: any) => {
       //  this.spinnerService.hide();
@@ -451,13 +459,17 @@ export class ItemDetailsComponent implements OnInit {
   uploadTrailor() {
     let url = `Trailer`;
     var formData = new FormData();
-    formData.append('video', this.videoFile);
+    formData.append('video', this.videoFile, this.videoFile.name.replace(/ /g, "_"));
     formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
     this.webService.fileUpload(url, formData).subscribe((response: any) => {
       //  this.spinnerService.hide();
       //  
       this.formDetails.trailor = environment.API_ENDPOINT + response.trailerUrl.replaceAll('\\', '/');
-      this.addEditItemMaterialModalRef.close();
+      this.isPosterAdded = true;
+      setTimeout(() => {
+        this.disableMainVideo = false;
+        this.active = 5;
+      }, 1000);
       this.toastr.success('Trailer uploaded', 'Success');
     }, (error) => {
       console.log('error ts: ', error);
@@ -467,14 +479,31 @@ export class ItemDetailsComponent implements OnInit {
   uploadMainVideo() {
     let url = `Video`;
     var formData = new FormData();
-    formData.append('video', this.videoFile);
+    formData.append('video', this.videoFile, this.videoFile.name.replace(/ /g, "_"));
     formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
-    this.webService.fileUpload(url, formData).subscribe((response: any) => {
+    this.webService.videoUpload(url, formData).subscribe((event: HttpEvent<any>) => {
       //  this.spinnerService.hide();
       //  
-      this.formDetails.trailor = environment.API_ENDPOINT + response.trailerUrl.replaceAll('\\', '/');
-      this.addEditItemMaterialModalRef.close();
-      this.toastr.success('Trailer uploaded', 'Success');
+      switch (event.type) {
+        case HttpEventType.Sent:
+          console.log('Request has been made!');
+          break;
+        case HttpEventType.ResponseHeader:
+          console.log('Response header has been received!');
+          break;
+        case HttpEventType.UploadProgress:
+          this.progress = Math.round(event.loaded / event.total * 100);
+          console.log(`Uploaded! ${this.progress}%`);
+          break;
+        case HttpEventType.Response:
+          // this.formDetails.trailor = environment.API_ENDPOINT + response.trailerUrl.replaceAll('\\', '/');
+          this.addEditItemMaterialModalRef.close();
+          this.toastr.success('Video uploaded', 'Success');
+          setTimeout(() => {
+            this.progress = 0;
+            this.getItemDetails();
+          }, 400);
+      }
     }, (error) => {
       console.log('error ts: ', error);
     });
