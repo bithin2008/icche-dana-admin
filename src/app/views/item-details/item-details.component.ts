@@ -351,11 +351,16 @@ export class ItemDetailsComponent implements OnInit {
     }
   }
 
-  uploadVideo(files: FileList) {
+  uploadVideo(files: FileList, type) {
     let validation = this.validateVideoUpload(files.item(0).name);
     if (validation) {
       this.videoFile = files.item(0);
-      this.uploadTrailor();
+      if (type === 'trailer') {
+        this.uploadTrailor();
+      }
+      if (type === 'main') {
+        this.uploadMainVideo();
+      }
       // this.formDetails.logo.hasImg = true;
     } else {
       this.toastr.error("Please upload only JPG, PNG, GIF format", "Error");
@@ -445,6 +450,22 @@ export class ItemDetailsComponent implements OnInit {
 
   uploadTrailor() {
     let url = `Trailer`;
+    var formData = new FormData();
+    formData.append('video', this.videoFile);
+    formData.append('viewitemMaterialId', this.currentViewitemMaterialId);
+    this.webService.fileUpload(url, formData).subscribe((response: any) => {
+      //  this.spinnerService.hide();
+      //  
+      this.formDetails.trailor = environment.API_ENDPOINT + response.trailerUrl.replaceAll('\\', '/');
+      this.addEditItemMaterialModalRef.close();
+      this.toastr.success('Trailer uploaded', 'Success');
+    }, (error) => {
+      console.log('error ts: ', error);
+    });
+  }
+
+  uploadMainVideo() {
+    let url = `Video`;
     var formData = new FormData();
     formData.append('video', this.videoFile);
     formData.append('viewitemMaterialId', this.currentViewitemMaterialId);

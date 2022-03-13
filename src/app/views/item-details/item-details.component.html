@@ -533,6 +533,45 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <hr>
+                            <div class="container">
+                                <form
+                                    class="box has-advanced-upload"
+                                    method="post"
+                                    action
+                                    enctype="multipart/form-data"
+                                >
+                                    <div class="box__input">
+                                        <input
+                                            class="box__file"
+                                            type="file"
+                                            accept="video/*"
+                                            #uploadMainVideoInput
+                                            (change)="uploadVideo($event.target.files,'main')"
+                                        >
+                                        <label for="file">
+                                            <strong>Choose a file</strong>
+                                            <span class="box__dragndrop">or drag it here</span>
+                                            .
+                                        </label>
+                                        <button
+                                            class="box__button"
+                                            type="submit"
+                                        >
+                                            Upload
+                                        </button>
+                                    </div>
+                                    <div class="box__uploading">Uploading…</div>
+                                    <div class="box__success">Done!</div>
+                                    <div class="box__error">
+                                        Error!
+                                        <span></span>
+                                        .
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer pb-0">
                         <button
@@ -678,7 +717,7 @@
                                 type="file"
                                 accept="video/*"
                                 #uploadInput
-                                (change)="uploadVideo($event.target.files)"
+                                (change)="uploadVideo($event.target.files,'trailer')"
                             >
                         </button>
                     </div>
